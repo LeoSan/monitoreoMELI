@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %} Modulo Ventas | Index {% endblock %}
+
+{% block content %}
+    
+    <div class="flex h-screen">
+        <!-- Include Sidebar -->
+         {% include 'venta/partials/sidebar.html' %}
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col">
+            <!-- Include Header -->
+            {% include 'venta/partials/header.html' %}
+
+            <!-- Content Area -->
+            <main class="flex-1 p-6 overflow-y-auto">
+               
+                <!-- Contenido del dashboard aquí -->
+                 {% include 'venta/partials/dashboard.html' %}
+               
+            </main>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,78 @@
+<div id="sidebar" class="bg-gradient-to-b from-gray-800 to-gray-900 text-white w-64 min-h-screen p-4 transition-all duration-300 shadow-lg">
+    <!-- Logo y título del sidebar -->
+    <div class="flex items-center mb-8 pb-4 border-b border-gray-700">
+        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3 shadow-md">
+            <i class="fas fa-chart-bar text-white text-lg"></i>
+        </div>
+        <div>
+            <h1 class="text-lg font-bold">Dashboard</h1>
+            <p class="text-xs text-gray-400">Panel de Control</p>
+        </div>
+    </div>
+    
+    <!-- Navegación principal -->
+    <nav class="space-y-2">
+        <a href="/" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-all duration-200 group">
+            <i class="fas fa-home mr-3 text-blue-400 group-hover:text-blue-300"></i>
+            <span class="font-medium">Inicio</span>
+        </a>
+        
+        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-all duration-200 group">
+            <i class="fas fa-shopping-cart mr-3 text-green-400 group-hover:text-green-300"></i>
+            <span class="font-medium">Ventas</span>
+            <span class="ml-auto bg-green-500 text-xs px-2 py-1 rounded-full">125</span>
+        </a>
+        
+        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-all duration-200 group">
+            <i class="fas fa-box mr-3 text-purple-400 group-hover:text-purple-300"></i>
+            <span class="font-medium">Productos</span>
+        </a>
+        
+        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-all duration-200 group">
+            <i class="fas fa-chart-line mr-3 text-yellow-400 group-hover:text-yellow-300"></i>
+            <span class="font-medium">Reportes</span>
+        </a>
+        
+        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-all duration-200 group">
+            <i class="fas fa-users mr-3 text-pink-400 group-hover:text-pink-300"></i>
+            <span class="font-medium">Operacion</span>
+        </a>
+        
+        <!-- Separador -->
+        <div class="border-t border-gray-700 my-4"></div>
+        
+        <!-- Sección de herramientas -->
+        <div class="text-gray-400 text-xs uppercase tracking-wider font-semibold mb-3 px-3">
+            Herramientas
+        </div>
+        
+        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-all duration-200 group">
+            <i class="fas fa-file-import mr-3 text-orange-400 group-hover:text-orange-300"></i>
+            <span class="font-medium">Importar Excel</span>
+        </a>
+        
+        <a href="/admin/" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-all duration-200 group" target="_blank">
+            <i class="fas fa-cog mr-3 text-red-400 group-hover:text-red-300"></i>
+            <span class="font-medium">Admin Django</span>
+            <i class="fas fa-external-link-alt ml-auto text-xs text-gray-500"></i>
+        </a>
+    </nav>
+    
+    <!-- Footer del sidebar -->
+    <div class="absolute bottom-4 left-4 right-4">
+        <div class="bg-gray-700 rounded-lg p-3">
+            <div class="flex items-center">
+                <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mr-3">
+                    <i class="fas fa-user text-white text-xs"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-medium text-white">{{ user.first_name|default:"Usuario" }}</p>
+                    <p class="text-xs text-gray-400">En línea</p>
+                </div>
+                <button class="text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
