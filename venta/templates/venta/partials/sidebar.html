@@ -1,0 +1,105 @@
+<div id="sidebar" class="bg-gradient-to-b from-gray-800 to-gray-900 text-white w-64 min-h-screen p-4 transition-all duration-300 shadow-lg">
+    <!-- Logo y título del sidebar -->
+    <div class="flex items-center mb-8 pb-4 border-b border-gray-700">
+        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3 shadow-md">
+            <i class="fas fa-chart-bar text-white text-lg"></i>
+        </div>
+        <div>
+            <h1 class="text-lg font-bold">Dashboard</h1>
+            <p class="text-xs text-gray-400">Panel de Control</p>
+        </div>
+    </div>
+    
+    <!-- Navegación principal -->
+    <nav class="space-y-2">
+
+        <div class="relative">
+            <!-- Botón principal de Reportes -->
+            <button id="reportesBtn" class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-700 transition-all duration-200 group focus:outline-none">
+                <div class="flex items-center">
+                    <i class="fas fa-chart-line mr-3 text-yellow-400 group-hover:text-yellow-300"></i>
+                    <span class="font-medium">Reportes</span>
+                </div>
+                <i id="reportesArrow" class="fas fa-chevron-down text-gray-400 text-sm transition-transform duration-200"></i>
+            </button>
+            
+            <!-- Submenú desplegable -->
+            <div id="reportesSubmenu" class="hidden mt-1 ml-8 space-y-1 transition-all duration-200">
+                <a href="#" class="flex items-center p-2 pl-4 rounded-lg text-sm hover:bg-gray-700 transition-all duration-200 group border-l-2 border-gray-600 hover:border-yellow-400">
+                    <i class="fas fa-fire mr-3 text-red-400 group-hover:text-red-300"></i>
+                    <span class="font-medium">Mapa de Calor</span>
+                </a>
+                <a href="#" class="flex items-center p-2 pl-4 rounded-lg text-sm hover:bg-gray-700 transition-all duration-200 group border-l-2 border-gray-600 hover:border-yellow-400">
+                    <i class="fas fa-search mr-3 text-green-400 group-hover:text-green-300"></i>
+                    <span class="font-medium">Chequeo por Producto</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Separador -->
+        <div class="border-t border-gray-700 my-4"></div>
+        
+        <!-- Sección de herramientas -->
+        <div class="text-gray-400 text-xs uppercase tracking-wider font-semibold mb-3 px-3">
+            Herramientas
+        </div>
+        
+        <a href="/venta/upload-csv" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-all duration-200 group">
+            <i class="fas fa-file-import mr-3 text-orange-400 group-hover:text-orange-300"></i>
+            <span class="font-medium">Importar Excel claude</span> upload
+        </a>
+
+        <a href="/venta/upload" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-all duration-200 group">
+            <i class="fas fa-file-import mr-3 text-orange-400 group-hover:text-orange-300"></i>
+            <span class="font-medium">Importar Excel leo</span> upload
+        </a>
+        
+        <a href="/admin/" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition-all duration-200 group" target="_blank">
+            <i class="fas fa-cog mr-3 text-red-400 group-hover:text-red-300"></i>
+            <span class="font-medium">Admin Django</span>
+            <i class="fas fa-external-link-alt ml-auto text-xs text-gray-500"></i>
+        </a>
+    </nav>
+</div>
+
+<script>
+// JavaScript para manejar el dropdown
+document.addEventListener('DOMContentLoaded', function() {
+    const reportesBtn = document.getElementById('reportesBtn');
+    const reportesSubmenu = document.getElementById('reportesSubmenu');
+    const reportesArrow = document.getElementById('reportesArrow');
+    
+    let isOpen = false;
+    
+    reportesBtn.addEventListener('click', function() {
+        isOpen = !isOpen;
+        
+        if (isOpen) {
+            reportesSubmenu.classList.remove('hidden');
+            reportesSubmenu.classList.add('animate-fade-in');
+            reportesArrow.style.transform = 'rotate(180deg)';
+        } else {
+            reportesSubmenu.classList.add('hidden');
+            reportesSubmenu.classList.remove('animate-fade-in');
+            reportesArrow.style.transform = 'rotate(0deg)';
+        }
+    });
+});
+</script>
+
+<style>
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.2s ease-out;
+}
+</style>

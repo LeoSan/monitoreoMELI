@@ -1,0 +1,44 @@
+<header class="bg-white shadow-lg p-4">
+    <div class="flex items-center justify-between">
+        <!-- Menu Hamburguesa (izquierda) -->
+        <button id="menu-toggle" class="lg:hidden text-gray-600 hover:text-gray-900 transition-colors">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+        
+        <!-- Logo y Título (centro en móvil, izquierda en desktop) -->
+        <div class="flex items-center mx-auto lg:mx-0">
+            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3 shadow-md">
+                <i class="fas fa-store text-white text-lg"></i>
+            </div>
+            <div class="hidden sm:block">
+                <h1 class="text-xl font-bold text-gray-800">TU Empresa</h1>
+                <p class="text-xs text-gray-500">Dashboard de Ventas</p>
+            </div>
+        </div>
+        
+        <!-- Usuario y notificaciones (derecha) -->
+        <div class="flex items-center space-x-3">
+            <!-- Notificaciones -->
+            <button class="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors">
+                <i class="fas fa-bell text-lg"></i>
+                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+            </button>
+            
+            <!-- Separador -->
+            <div class="h-6 w-px bg-gray-300 hidden md:block"></div>
+            
+            <!-- Información del usuario -->
+            <div class="flex items-center space-x-3">
+                <div class="hidden md:block text-right">
+                    <p class="text-sm text-gray-600">Bienvenido,</p>
+                    <p class="font-semibold text-gray-800 text-sm">{{ user.first_name|default:"Usuario" }} {{ user.last_name|default:"Demo" }}</p>
+                </div>
+                <div class="relative">
+                    <button class="w-10 h-10 bg-gradient-to-r from-gray-400 to-gray-500 rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow">
+                        <i class="fas fa-user text-white text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

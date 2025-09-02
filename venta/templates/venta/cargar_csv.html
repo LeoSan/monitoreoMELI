@@ -1,0 +1,329 @@
+{% extends 'base.html' %}
+
+{% block title %} Carga Ventas | Index {% endblock %}
+
+{% block content %}
+
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="bg-white rounded-lg shadow-sm border p-6 text-center">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                    <i class="fas fa-file-csv text-green-500 mr-3"></i>
+                    Cargar CSV de Ventas
+                </h1>
+                <p class="text-gray-600">Sube tu archivo CSV para procesarlo automáticamente</p>
+            </div>
+        </div>
+
+        <!-- Mensajes Django -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-4 p-4 rounded-md border-l-4 
+                    {% if message.tags == 'success' %}bg-green-50 border-green-400 text-green-700
+                    {% elif message.tags == 'error' %}bg-red-50 border-red-400 text-red-700
+                    {% elif message.tags == 'warning' %}bg-yellow-50 border-yellow-400 text-yellow-700
+                    {% else %}bg-blue-50 border-blue-400 text-blue-700{% endif %}">
+                    <div class="flex justify-between items-center">
+                        <div>{{ message }}</div>
+                        <button type="button" class="text-gray-400 hover:text-gray-600" onclick="this.parentElement.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Formulario de carga -->
+        <div class="flex justify-center mb-8">
+            <div class="w-full max-w-4xl">
+                <div class="bg-white rounded-lg shadow-sm border overflow-hidden">
+                    <div class="bg-blue-500 text-white px-6 py-4">
+                        <h5 class="text-xl font-semibold mb-0">
+                            <i class="fas fa-upload mr-2"></i>
+                            Seleccionar archivo CSV
+                        </h5>
+                    </div>
+                    <div class="p-6">
+                        <form method="post" enctype="multipart/form-data" id="csvForm">
+                            {% csrf_token %}
+                            
+                            <!-- Zona de carga drag & drop -->
+                            <div class="upload-zone border-2 border-dashed border-gray-300 rounded-lg p-10 text-center cursor-pointer" id="uploadZone">
+                                <i class="fas fa-cloud-upload-alt text-6xl text-gray-400 mb-4"></i>
+                                <h5 class="text-xl font-semibold text-gray-700 mb-2">Arrastra tu archivo CSV aquí</h5>
+                                <p class="text-gray-500 mb-4">o haz clic para seleccionarlo</p>
+                                
+                                {{ form.archivo_csv }}
+                                
+                                <div class="mt-4">
+                                    <small class="text-gray-500">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Formato soportado: CSV (máx. 50MB)
+                                        <br>
+                                        Separador: punto y coma (;)
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Información del archivo seleccionado -->
+                            <div id="fileInfo" class="mt-4 hidden">
+                                <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
+                                    <i class="fas fa-file-csv mr-2 text-blue-500"></i>
+                                    <strong class="text-blue-800">Archivo seleccionado:</strong> 
+                                    <span id="fileName" class="text-blue-700"></span>
+                                    <br>
+                                    <small class="text-blue-600"><strong>Tamaño:</strong> <span id="fileSize"></span></small>
+                                </div>
+                            </div>
+
+                            <!-- Errores del formulario -->
+                            {% if form.archivo_csv.errors %}
+                                <div class="mt-4 bg-red-50 border border-red-200 rounded-md p-4">
+                                    {% for error in form.archivo_csv.errors %}
+                                        <div class="text-red-700">
+                                            <i class="fas fa-exclamation-circle mr-1"></i>{{ error }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <!-- Botones -->
+                            <div class="mt-6">
+                                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors" id="submitBtn">
+                                    <i class="fas fa-cogs mr-2"></i>
+                                    Procesar CSV
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Barra de progreso -->
+                        <div class="progress-container mt-4">
+                            <div class="bg-gray-200 rounded-full h-2 mb-2">
+                                <div class="bg-blue-500 h-2 rounded-full transition-all duration-300 progress-bar" style="width: 0%"></div>
+                            </div>
+                            <small class="text-gray-500">Procesando archivo...</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultado del procesamiento -->
+        {% if mostrar_resultado and resultado %}
+        <div class="mb-8">
+            <div class="bg-white rounded-lg shadow-sm border overflow-hidden 
+                {% if resultado.exito %}border-l-4 border-l-green-500
+                {% else %}border-l-4 border-l-yellow-500{% endif %}">
+                <div class="bg-gray-50 px-6 py-4 border-b">
+                    <h5 class="text-xl font-semibold">
+                        {% if resultado.exito %}
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            Resultado del Procesamiento - EXITOSO
+                        {% else %}
+                            <i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>
+                            Resultado del Procesamiento - CON ADVERTENCIAS
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="p-6">
+                    <!-- Resumen -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-gray-50 p-4 rounded-lg text-center">
+                            <h4 class="text-2xl font-bold text-blue-600 mb-1">{{ resultado.filas_leidas }}</h4>
+                            <small class="text-gray-600">Filas leídas</small>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg text-center">
+                            <h4 class="text-2xl font-bold text-green-600 mb-1">{{ resultado.resultado_carga.exitosos }}</h4>
+                            <small class="text-gray-600">Registros cargados</small>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg text-center">
+                            <h4 class="text-2xl font-bold text-red-600 mb-1">{{ resultado.resultado_carga.errores }}</h4>
+                            <small class="text-gray-600">Errores de carga</small>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg text-center">
+                            <h4 class="text-2xl font-bold text-yellow-600 mb-1">{{ resultado.errores_validacion|length }}</h4>
+                            <small class="text-gray-600">Errores validación</small>
+                        </div>
+                    </div>
+
+                    <!-- Columnas procesadas -->
+                    <h6 class="text-lg font-semibold mb-3">
+                        <i class="fas fa-columns mr-2"></i>Columnas procesadas:
+                    </h6>
+                    <div class="mb-6">
+                        {% for columna in resultado.columnas_mapeadas %}
+                            <span class="inline-block bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm mr-2 mb-2">{{ columna }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Errores de validación -->
+                    {% if resultado.errores_validacion %}
+                    <div class="mb-6">
+                        <h6 class="text-lg font-semibold mb-3">
+                            <i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>Errores de Validación:
+                        </h6>
+                        <div class="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto">
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full">
+                                    <thead class="bg-gray-100">
+                                        <tr>
+                                            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Fila</th>
+                                            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Errores</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        {% for error in resultado.errores_validacion|slice:":10" %}
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-sm text-gray-900">{{ error.fila }}</td>
+                                            <td class="px-4 py-3">
+                                                {% for err in error.errores %}
+                                                    <div class="text-sm text-red-600">• {{ err }}</div>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% if resultado.errores_validacion|length > 10 %}
+                                        <tr>
+                                            <td colspan="2" class="px-4 py-3 text-center text-gray-500">
+                                                ... y {{ resultado.errores_validacion|length|add:"-10" }} errores más
+                                            </td>
+                                        </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Errores de carga -->
+                    {% if resultado.resultado_carga.errores_detalle %}
+                    <div>
+                        <h6 class="text-lg font-semibold mb-3">
+                            <i class="fas fa-database text-red-500 mr-2"></i>Errores de Base de Datos:
+                        </h6>
+                        <div class="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto">
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full">
+                                    <thead class="bg-gray-100">
+                                        <tr>
+                                            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Fila</th>
+                                            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Error</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        {% for error in resultado.resultado_carga.errores_detalle|slice:":5" %}
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-sm text-gray-900">{{ error.fila }}</td>
+                                            <td class="px-4 py-3 text-sm text-red-600">{{ error.error }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+        <script>
+        // Referencias a elementos
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('archivo_csv');
+        const submitBtn = document.getElementById('submitBtn');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const csvForm = document.getElementById('csvForm');
+        const progressContainer = document.querySelector('.progress-container');
+
+        // Event listeners
+        fileInput.addEventListener('change', handleFileSelect);
+        uploadZone.addEventListener('click', () => fileInput.click());
+        uploadZone.addEventListener('dragover', handleDragOver);
+        uploadZone.addEventListener('dragleave', handleDragLeave);
+        uploadZone.addEventListener('drop', handleDrop);
+        csvForm.addEventListener('submit', handleFormSubmit);
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                showFileInfo(file);
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('bg-gray-400');
+                submitBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+            } else {
+                hideFileInfo();
+                submitBtn.disabled = true;
+                submitBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
+                submitBtn.classList.add('bg-gray-400');
+            }
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            uploadZone.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                handleFileSelect({ target: { files: files } });
+            }
+        }
+
+        function showFileInfo(file) {
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            fileInfo.classList.remove('hidden');
+        }
+
+        function hideFileInfo() {
+            fileInfo.classList.add('hidden');
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function handleFormSubmit(e) {
+            // Mostrar barra de progreso
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Procesando...';
+            submitBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
+            submitBtn.classList.add('bg-gray-400');
+            progressContainer.style.display = 'block';
+            
+            // Simular progreso (en una implementación real podrías hacer AJAX polling)
+            let progress = 0;
+            const progressBar = document.querySelector('.progress-bar');
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 90) {
+                    clearInterval(interval);
+                    progress = 90; // Deja que el servidor complete el 100%
+                }
+                progressBar.style.width = progress + '%';
+            }, 500);
+        }
+    </script>
+    
+{% endblock %}
+

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %} Carga Ventas | Index {% endblock %}
+
+{% block content %}
+    
+    <div class="flex h-screen">
+        <!-- Include Sidebar -->
+         {% include 'venta/partials/sidebar.html' %}
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col">
+            <!-- Include Header -->
+            {% include 'venta/partials/header.html' %}
+
+            <!-- Content Area -->
+            <main class="flex-1 p-6 overflow-y-auto">
+               
+                <!-- Contenido del dashboard aquí -->
+                <div class="container mx-auto p-4">
+                    <h1 class="text-2xl font-bold mb-4">Subir Archivo de Ventas</h1>
+
+                    {% if messages %}
+                    <ul class="mb-4">
+                        {% for message in messages %}
+                        <li class="p-2 {% if message.tags %}bg-{{ message.tags }}-100 text-{{ message.tags }}-800{% endif %}">
+                            {{ message }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+
+                    <form id="uploadForm" method="post" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-md">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="archivo_csv" class="block text-gray-700 font-bold mb-2">Seleccionar archivo CSV:</label>
+                            <input type="file" id="archivo_csv" name="archivo_csv" accept=".csv" required
+                                class="w-full px-3 py-2 border rounded-md">
+                        </div>
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Subir y Procesar
+                        </button>
+                    </form>
+
+                    {% if request.session.errores_detalle %}
+                    <div class="mt-8">
+                        <h2 class="text-xl font-bold mb-4 text-red-600">Errores de Validación</h2>
+                        <ul class="list-disc list-inside bg-red-100 p-4 rounded-lg">
+                            {% for error_fila in request.session.errores_detalle %}
+                            <li class="mb-2">
+                                **Fila {{ error_fila.fila }}**:
+                                <ul>
+                                    {% for error_msg in error_fila.errores %}
+                                    <li>- {{ error_msg }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+               
+            </main>
+        </div>
+    </div>
+
+{% endblock %}
+
+<script>
+    document.getElementById('uploadForm').addEventListener('submit', function(event) {
+        const archivoInput = document.getElementById('archivo_csv');
+        const archivo = archivoInput.files[0];
+
+        if (archivo) {
+            const nombreArchivo = archivo.name.toLowerCase();
+            if (!nombreArchivo.endsWith('.csv')) {
+                alert('Por favor, selecciona un archivo con extensión .csv');
+                event.preventDefault(); // Evita que el formulario se envíe
+            }
+        } else {
+            alert('Por favor, selecciona un archivo para subir.');
+            event.preventDefault();
+        }
+    });
+</script>
