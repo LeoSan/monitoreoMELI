@@ -240,3 +240,11 @@ def mapa_calor(request):
         }
     
     return render(request, 'venta/mapa_calor.html', context)
+
+@login_required
+def obtenerAnalisisProducto(request): 
+    return render(request, 'venta/check_producto.html')
+
+@login_required
+def generarCloudWord(request):
+    return render(request, 'venta/cloud_word.html') 

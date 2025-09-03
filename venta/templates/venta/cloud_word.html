@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %} Carga Ventas | Index {% endblock %}
+
+{% block content %}
+    
+    <div class="flex h-screen">
+        <!-- Include Sidebar -->
+         {% include 'venta/partials/sidebar.html' %}
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col">
+            <!-- Include Header -->
+            {% include 'venta/partials/header.html' %}
+
+            <!-- Content Area -->
+            <main class="flex-1 p-6 overflow-y-auto">
+               
+                <!-- Contenido del dashboard aquí -->
+                <div class="container mx-auto p-4">
+                    <div class="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-8 border-b pb-4">Nube de Palabras: Productos Más Vendidos</h1>
+                        <!-- Include FILTROS -->
+                        {% include 'venta/partials/filtros.html' %}
+
+                        <div class="p-8 bg-purple-50 rounded-lg border border-purple-200 shadow-md">
+                            <h2 class="text-xl font-semibold text-purple-800 mb-6">WORD CLOUD</h2>
+                            <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-center leading-relaxed">
+                                <span class="text-2xl font-bold text-indigo-700">Smartphone Pro</span>
+                                <span class="text-base text-gray-700">Auriculares Inalámbricos</span>
+                                <span class="text-3xl font-extrabold text-blue-800">Laptop Ultrabook</span>
+                                <span class="text-xl text-green-700">Tablet Edición Lite</span>
+                                <span class="text-lg text-red-700">Reloj Inteligente</span>
+                                <span class="text-sm text-gray-600">Cargador Rápido</span>
+                                <span class="text-2xl font-semibold text-teal-700">Monitor Curvo 27"</span>
+                                <span class="text-base text-purple-700">Teclado Mecánico</span>
+                                <span class="text-3xl font-bold text-pink-700">Consola de Videojuegos</span>
+                                <span class="text-lg text-yellow-700">Mouse Ergonómico</span>
+                                <span class="text-sm text-gray-500">Webcam HD</span>
+                                <span class="text-2xl font-medium text-cyan-700">Altavoz Bluetooth</span>
+                                <span class="text-base text-orange-700">Proyector Portátil</span>
+                                <span class="text-xl text-lime-700">Disco Duro SSD 1TB</span>
+                                <span class="text-lg text-fuchsia-700">Impresora Multifunción</span>
+                                <span class="text-sm text-gray-400">Router WiFi 6</span>
+                                <span class="text-2xl font-bold text-violet-700">Smart TV 55"</span>
+                                <span class="text-base text-rose-700">Cámara Mirrorless</span>
+                                <span class="text-3xl font-extrabold text-sky-800">Drone Profesional</span>
+                                <span class="text-xl text-emerald-700">Robot Aspirador</span>
+                                <span class="text-lg text-amber-700">Cafetera Inteligente</span>
+                                <span class="text-sm text-gray-500">Batería Externa 10000mAh</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+               
+            </main>
+        </div>
+    </div>
+
+{% endblock %}
+
