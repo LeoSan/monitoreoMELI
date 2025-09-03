@@ -21,6 +21,38 @@ class TVentas(models.Model):
     def __str__(self):
         return f"{self.titulo} - {self.fecha_venta}"
     
+    @classmethod
+    def productos_por_marca(cls, marca='NUBE'):
+        """
+        Obtiene productos únicos por marca ordenados por título
+        """
+        return cls.objects.filter(
+            marca=marca
+        ).values(
+            'titulo', 'publicacion_mlm_id'
+        ).distinct().order_by('titulo')
+
+
+    # Alternativa usando SQL raw si prefieres mantener la consulta exacta
+    @classmethod
+    def productos_por_marca_raw(cls, marca):
+        """
+        Obtiene productos únicos por marca usando SQL raw
+        """
+        from django.db import connection
+        
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT tv.titulo, tv.publicacion_mlm_id
+                FROM public.t_ventas as tv 
+                WHERE tv.marca = %s
+                GROUP BY tv.titulo, tv.publicacion_mlm_id
+                ORDER BY tv.titulo ASC
+            """, [marca])
+            
+            columns = [col[0] for col in cursor.description]
+            return [dict(zip(columns, row)) for row in cursor.fetchall()]      
+    
     
 class TProductos(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -36,8 +68,7 @@ class TProductos(models.Model):
         verbose_name_plural = 'Productos'
 
     def __str__(self):
-        return f"{self.nombre} - {self.descripcion}"    
-    
+        return f"{self.nombre} - {self.descripcion}"
     
 class TCompetencia(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -53,4 +84,6 @@ class TCompetencia(models.Model):
 
     def __str__(self):
         return f"{self.nombre} - {self.marca}"        
+    
+    
     
