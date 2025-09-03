@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+
+{% block title %} Carga Ventas | Index {% endblock %}
+
+{% block content %}
+
+
+    <div class="flex h-screen">
+        <!-- Include Sidebar -->
+         {% include 'venta/partials/sidebar.html' %}
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col">
+            <!-- Include Header -->
+            {% include 'venta/partials/header.html' %}
+
+            <!-- Content Area -->
+            <main class="flex-1 p-6 overflow-y-auto">
+                <!-- Contenido del dashboard aquí -->
+                <div class="container mx-auto px-4 py-8 max-w-6xl">
+                        <!-- Header -->
+                        <div class="bg-white shadow-sm border-b">
+                            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                                <div class="py-6">
+                                    <h1 class="text-3xl font-bold text-gray-900">Mapa de Calor - Productos</h1>
+                                    <p class="mt-2 text-gray-600">Productos de la marca: <span class="font-semibold text-blue-600">{{ marca_filtrada }}</span></p>
+                                </div>
+                            </div>
+                        </div>        
+                        
+                        <div class="bg-white rounded-lg shadow-sm border p-6 mb-8">
+                            <h2 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                                <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                                </svg>
+                                Filtros de Búsqueda
+                            </h2>
+                            
+                            <form method="GET" id="filtrosForm" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                
+                                <!-- COMBOBOX 1: MARCA -->
+                                <div class="space-y-2">
+                                    <label for="marca" class="block text-sm font-semibold text-gray-700">
+                                        <svg class="w-4 h-4 inline mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                        </svg>
+                                        Marca
+                                    </label>
+                                    <select name="marca" id="marca" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 font-medium">
+                                        <option value="">🏷️ Todas las marcas</option>
+                                        <option value="NUBE" {% if marca_seleccionada == 'NUBE' %}selected{% endif %}>🌟 NUBE</option>
+                                        <option value="BAZARU" {% if marca_seleccionada == 'BAZARU' %}selected{% endif %}>🛍️ BAZARU</option>
+                                        <option value="KABUDU" {% if marca_seleccionada == 'KABUDU' %}selected{% endif %}>⚡ KABUDU</option>
+                                    </select>
+                                    <p class="text-xs text-gray-500 mt-1">Selecciona una marca para filtrar</p>
+                                </div>
+
+                                <!-- COMBOBOX 2: PRODUCTO -->
+                                <div class="space-y-2">
+                                    <label for="producto" class="block text-sm font-semibold text-gray-700">
+                                        <svg class="w-4 h-4 inline mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                        </svg>
+                                        Producto
+                                    </label>
+                                    <select name="producto" id="producto" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-gray-900 font-medium">
+                                        <option value="">📦 Todos los productos</option>
+                                        {% for producto in productos_disponibles %}
+                                        <option value="{{ producto.titulo }}" {% if producto_seleccionado == producto.titulo %}selected{% endif %}>
+                                            {{ producto.titulo|truncatechars:50 }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <p class="text-xs text-gray-500 mt-1">Filtra por producto específico</p>
+                                </div>
+
+                                <!-- COMBOBOX 3: NÚMERO DE PUBLICACIÓN MLM -->
+                                <div class="space-y-2">
+                                    <label for="publicacion_mlm" class="block text-sm font-semibold text-gray-700">
+                                        <svg class="w-4 h-4 inline mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        Número de Publicación MLM
+                                    </label>
+                                    <select name="publicacion_mlm" id="publicacion_mlm" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white text-gray-900 font-medium">
+                                        <option value="">🔢 Todas las publicaciones</option>
+                                        {% for pub in publicaciones_disponibles %}
+                                        <option value="{{ pub.publicacion_mlm_id }}" {% if publicacion_seleccionada == pub.publicacion_mlm_id %}selected{% endif %}>
+                                            {{ pub.publicacion_mlm_id }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <p class="text-xs text-gray-500 mt-1">Busca por ID de publicación específica</p>
+                                </div>
+
+                            </form>
+
+                            <!-- Botones de Acción -->
+                            <div class="flex flex-wrap gap-4 mt-6 pt-4 border-t border-gray-200">
+                                <button onclick="aplicarFiltros()" class="inline-flex items-center px-6 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-105">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                    🔍 Aplicar Filtros
+                                </button>
+                                
+                                <button onclick="limpiarFiltros()" class="inline-flex items-center px-6 py-3 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                    </svg>
+                                    🧹 Limpiar Filtros
+                                </button>
+
+                                <button onclick="cargarDatos()" class="inline-flex items-center px-6 py-3 border border-green-300 rounded-lg shadow-sm text-sm font-medium text-green-700 bg-green-50 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                    </svg>
+                                    🔄 Recargar Opciones
+                                </button>
+                            </div>
+                        </div>
+        
+                        <!-- Stats Card -->
+                        <div class="bg-white rounded-lg shadow-sm border p-6 mb-8">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h2 class="text-lg font-semibold text-gray-900">Resultados Encontrados</h2>
+                                    <p class="text-4xl font-bold text-blue-600 mt-2">{{ total_productos }}</p>
+                                    
+                                    <!-- Filtros Aplicados -->
+                                    {% if marca_seleccionada or producto_seleccionado or publicacion_seleccionada %}
+                                    <div class="flex flex-wrap gap-2 mt-4">
+                                        <span class="text-sm text-gray-600 font-medium">Filtros activos:</span>
+                                        {% if marca_seleccionada %}
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                                            🏷️ Marca: {{ marca_seleccionada }}
+                                        </span>
+                                        {% endif %}
+                                        {% if producto_seleccionado %}
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                                            📦 Producto: {{ producto_seleccionado|truncatechars:30 }}
+                                        </span>
+                                        {% endif %}
+                                        {% if publicacion_seleccionada %}
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 border border-purple-200">
+                                            🔢 MLM: {{ publicacion_seleccionada }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-4 rounded-full">
+                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Products Table -->
+                        {% if productos %}
+                            <div class="bg-white rounded-lg shadow-sm border overflow-hidden">
+                                <div class="px-6 py-4 border-b border-gray-200">
+                                    <h3 class="text-lg font-semibold text-gray-900">Lista de Productos</h3>
+                                </div>
+                                
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    #
+                                                </th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Título del Producto
+                                                </th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    ID Publicación MLM
+                                                </th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Acciones
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">
+                                            {% for producto in productos %}
+                                            <tr class="hover:bg-gray-50 transition-colors duration-200">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {{ forloop.counter }}
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <div class="text-sm font-medium text-gray-900 max-w-md">
+                                                        {{ producto.titulo|truncatechars:80 }}
+                                                    </div>
+                                                    {% if producto.titulo|length > 80 %}
+                                                    <div class="text-xs text-gray-500 mt-1">
+                                                        Texto completo: {{ producto.titulo }}
+                                                    </div>
+                                                    {% endif %}
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                        {{ producto.publicacion_mlm_id }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                    <a href="https://mercadolibre.com.mx/{{ producto.publicacion_mlm_id }}" 
+                                                    target="_blank" 
+                                                    class="text-blue-600 hover:text-blue-900 inline-flex items-center">
+                                                        Ver en ML
+                                                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                                        </svg>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                    {% else %}
+                    <!-- Empty State -->
+                    <div class="bg-white rounded-lg shadow-sm border p-16 text-center">
+                        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gray-100 mb-4">
+                            <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">📭 No hay productos disponibles</h3>
+                        <p class="text-gray-600 mb-4">No se encontraron productos que coincidan con los filtros aplicados.</p>
+                        <button onclick="limpiarFiltros()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            🔄 Limpiar filtros y reintentar
+                        </button>
+                    </div>
+                    {% endif %}                 
+                </div>
+            </main>
+        </div>
+    </div>
+
+    
+{% endblock %}
+
+    <!-- JavaScript -->
+    <script>
+        function aplicarFiltros() {
+            const marca = document.getElementById('marca').value;
+            const producto = document.getElementById('producto').value;
+            const publicacionMlm = document.getElementById('publicacion_mlm').value;
+            
+            // Construir URL con parámetros
+            const params = new URLSearchParams();
+            if (marca) params.append('marca', marca);
+            if (producto) params.append('producto', producto);
+            if (publicacionMlm) params.append('publicacion_mlm', publicacionMlm);
+            
+            // Redirigir con filtros
+            const url = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+            window.location.href = url;
+        }
+        
+        function limpiarFiltros() {
+            window.location.href = window.location.pathname;
+        }
+        
+        function cargarDatos() {
+            // Auto-submit cuando cambia algún select
+            aplicarFiltros();
+        }
+        
+        // Auto-submit cuando cambian los selects
+        document.getElementById('marca').addEventListener('change', aplicarFiltros);
+        document.getElementById('producto').addEventListener('change', aplicarFiltros);
+        document.getElementById('publicacion_mlm').addEventListener('change', aplicarFiltros);
+        
+        // Añadir efectos visuales
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar loading cuando se aplican filtros
+            const selects = document.querySelectorAll('select');
+            selects.forEach(select => {
+                select.addEventListener('change', function() {
+                    document.body.style.cursor = 'wait';
+                    setTimeout(() => {
+                        document.body.style.cursor = 'default';
+                    }, 1000);
+                });
+            });
+        });
+    </script>
+

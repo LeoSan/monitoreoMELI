@@ -15,6 +15,8 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf import settings
 
+from venta.models import TVentas
+
 # Propios 
 from .forms import CSVUploadForm
 from .utils import procesar_csv_ventas_completo
@@ -167,3 +169,74 @@ def estado_carga_csv(request):
     # Esta función la podrías usar después para mostrar progreso en tiempo real
     return JsonResponse({'status': 'completed'})
 
+@login_required
+def mapa_calor(request):
+    try:
+        # Obtener parámetros de los tres filtros
+        marca_filtro = request.GET.get('marca', '')
+        producto_filtro = request.GET.get('producto', '')
+        publicacion_filtro = request.GET.get('publicacion_mlm', '')
+        
+        # Obtener todas las opciones para los combobox
+        # Marcas disponibles (ya las tienes fijas)
+        marcas_disponibles = ['NUBE', 'BAZARU', 'KABUDU']
+        
+        # Productos disponibles (títulos únicos)
+        productos_disponibles = TVentas.objects.values('titulo').distinct().order_by('titulo')
+        
+        # Publicaciones disponibles (IDs únicos)
+        publicaciones_disponibles = TVentas.objects.values('publicacion_mlm_id').distinct().order_by('publicacion_mlm_id')
+        
+        # Construir la consulta base
+        queryset = TVentas.objects.all()
+        
+        # Aplicar filtros según lo seleccionado
+        if marca_filtro:
+            queryset = queryset.filter(marca=marca_filtro)
+            
+        if producto_filtro:
+            queryset = queryset.filter(titulo=producto_filtro)
+            
+        if publicacion_filtro:
+            queryset = queryset.filter(publicacion_mlm_id=publicacion_filtro)
+        
+        # Si no hay ningún filtro, mostrar NUBE por defecto
+        if not marca_filtro and not producto_filtro and not publicacion_filtro:
+            queryset = queryset.filter(marca='NUBE')
+            marca_filtro = 'NUBE'
+        
+        # Obtener productos únicos con los filtros aplicados
+        productos_resultado = queryset.values(
+            'titulo', 'publicacion_mlm_id'
+        ).distinct().order_by('titulo')
+        
+        # Convertir a lista
+        productos_lista = list(productos_resultado)
+        
+        context = {
+            'productos': productos_lista,
+            'total_productos': len(productos_lista),
+            
+            # Opciones para los combobox
+            'productos_disponibles': productos_disponibles,
+            'publicaciones_disponibles': publicaciones_disponibles,
+            
+            # Valores seleccionados para mantener estado
+            'marca_seleccionada': marca_filtro,
+            'producto_seleccionado': producto_filtro,
+            'publicacion_seleccionada': publicacion_filtro,
+        }
+        
+    except Exception as e:
+        context = {
+            'productos': [],
+            'total_productos': 0,
+            'productos_disponibles': [],
+            'publicaciones_disponibles': [],
+            'marca_seleccionada': '',
+            'producto_seleccionado': '',
+            'publicacion_seleccionada': '',
+            'error': str(e)
+        }
+    
+    return render(request, 'venta/mapa_calor.html', context)
