@@ -1,5 +1,4 @@
 import os
-import json
 import tempfile
 import logging
 
@@ -10,16 +9,13 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
 from django.conf import settings
 
 from venta.models import TVentas
 
 # Propios 
 from .forms import CSVUploadForm
-from .utils import procesar_csv_ventas_completo
+from .utils import procesar_csv_ventas_completo, generarScrapingPorProducto
 
 logger = logging.getLogger(__name__)
 
@@ -242,7 +238,15 @@ def mapa_calor(request):
     return render(request, 'venta/mapa_calor.html', context)
 
 @login_required
-def obtenerAnalisisProducto(request): 
+def obtenerAnalisisProducto(request):
+    boton_scraping = request.GET.get('scraping')
+    if boton_scraping:
+        generarScrapingPorProducto(1)
+        messages.success(
+            request, 
+            "✅ Scraping iniciado para el producto seleccionado.!"
+        )
+
     return render(request, 'venta/check_producto.html')
 
 @login_required

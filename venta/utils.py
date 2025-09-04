@@ -3,11 +3,23 @@ import os
 from datetime import datetime
 import logging
 import re
-from django.conf import settings
-from django.core.exceptions import ValidationError
+import os
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+from dotenv import load_dotenv
+
 from .models import TVentas
 
 # Configurar logging
+load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -345,3 +357,66 @@ def procesar_csv_ventas_completo(ruta_archivo, mapeo_columnas=None, mostrar_prog
     except Exception as e:
         logger.error(f"Error general en procesamiento: {str(e)}")
         raise
+
+
+
+def iniciar_driver():
+    """Inicializa y configura el driver de Selenium."""
+    opts = Options()
+    opts.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.7258.115 Safari/537.36")
+    opts.add_argument("--disable-search-engine-choice-screen")
+    opts.add_argument("--headless")
+    opts.add_argument("--no-sandbox")
+    opts.add_argument("--disable-gpu")
+    opts.add_argument("--disable-dev-shm-usage")
+    service = Service(os.getenv('DRIVER_PATH'))
+    return webdriver.Chrome(service=service, options=opts)
+
+
+    
+def generarScrapingPorProducto( producto_id):
+    """
+    Realiza el scraping de un producto usando un driver ya inicializado.
+    
+    Args:
+        driver (WebDriver): Instancia de Selenium WebDriver.
+        producto_id (int): PK del producto en TProductos.
+        
+    Returns:
+        dict: Resultado completo del proceso.
+    """
+    try:
+        logger.info(f"=== INICIANDO SCRAPING DE {producto_id} ===")
+        driver = iniciar_driver()
+        # Simular una URL de producto para el ejemplo
+        url = "https://www.mercadolibre.com.mx/bicicleta-de-equilibrio-sin-pedales-llantas-de-aire-infantil-color-rojo/p/MLM45602311#polycard_client=search_best-seller&tracking_id=382d3386-c3ba-4f69-a37c-4193915f0724&wid=MLM3539214790&sid=search"
+        driver.get(url)
+        
+        # Usar WebDriverWait para esperar de forma inteligente el elemento
+        # Se espera 10 segundos como máximo a que el elemento sea visible
+        wait = WebDriverWait(driver, 10)
+        
+        # ---- CAMBIO PRINCIPAL: Se usa el selector XPath ----
+        precio_element = wait.until(
+            EC.visibility_of_element_located((
+                By.XPATH, 
+                '//span[@itemprop="price"]'
+            ))
+        )
+        
+        precio_meta = precio_element.get_attribute('content')
+        logger.info(f"Precio encontrado para {producto_id}: {precio_meta}")
+        
+        resultado_final = {
+            'producto_id': producto_id,
+            'precio': precio_meta
+        }
+        driver.quit()
+        logger.info("=== SCRAPING COMPLETADO ===")
+        
+        return resultado_final
+        
+    except Exception as e:
+        logger.error(f"Error al procesar el producto {producto_id}: {str(e)}")
+        # Aquí puedes decidir si relanzar la excepción o devolver un resultado de error
+        return {'producto_id': producto_id, 'error': str(e)}
