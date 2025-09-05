@@ -1,31 +1,39 @@
 from django.contrib import admin
-from .models import TVentas, TProductos, TCompetencia
+from .models import TVentas, TProductos, TProductoCompetencia, TMarca
 
 
 @admin.register(TVentas)
 class TVentasAdmin(admin.ModelAdmin):
-    list_display = ['id', 'titulo', 'sku', 'fecha_venta', 'marca', 'total']
-    list_filter = ['marca', 'fecha_venta']
-    search_fields = ['titulo', 'sku', 'publicacion_mlm_id']
+    list_display   = ['id', 'titulo', 'sku', 'fecha_venta', 'marca', 'total']
+    list_filter    = ['marca', 'fecha_venta']
+    search_fields  = ['titulo', 'sku', 'publicacion_mlm_id']
     date_hierarchy = 'fecha_venta'
-    ordering = ['-fecha_venta']
+    ordering       = ['-fecha_venta']
+
+
+@admin.register(TMarca)
+class TMarcaAdmin(admin.ModelAdmin):
+    list_display  = ['id', 'nombre', 'descripcion']
+    list_filter   = ['nombre', 'descripcion']
+    search_fields = ['nombre']
+    ordering      = ['-nombre']
 
 @admin.register(TProductos)
 class TProductosAdmin(admin.ModelAdmin):
-    list_display = ['id', 'nombre', 'sku', 'marca']
-    list_filter = ['marca', 'nombre', 'sku']
-    search_fields = ['nombre', 'sku', 'marca']
-    ordering = ['-nombre']
+    list_display  = ['id', 'nombre', 'sku', 'marca_fk']
+    list_filter   = ['marca_fk', 'nombre', 'sku']
+    search_fields = ['nombre', 'sku']
+    ordering      = ['-nombre']
     
 class TProductosInlineAdmin(admin.TabularInline):
     model = TProductos
     extra = 0
 
-@admin.register(TCompetencia)
-class TCompetenciaAdmin(admin.ModelAdmin):
-    list_display = ['id', 'nombre', 'marca', 'precio', 'productos_id']
-    list_filter = ['marca', 'nombre']
-    search_fields = ['nombre', 'marca']
+@admin.register(TProductoCompetencia)
+class TProductoCompetenciaAdmin(admin.ModelAdmin):
+    list_display  = ['id', 'nombre_producto']
+    list_filter   = ['marca_fk', 'nombre_producto']
+    search_fields = ['-nombre_producto']
     # inlines = [
     #     TProductosInlineAdmin
     # ]  ## Esto permite hacer el macth con los productos     
