@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.conf import settings
 
-from venta.models import TVentas
+from venta.models import TVentas, TProductos, TProductoCompetencia, TMarca
 
 # Propios 
 from .forms import CSVUploadForm
@@ -174,8 +174,6 @@ def mapa_calor(request):
         publicacion_filtro = request.GET.get('publicacion_mlm', '')
         
         # Obtener todas las opciones para los combobox
-        # Marcas disponibles (ya las tienes fijas)
-        marcas_disponibles = ['NUBE', 'BAZARU', 'KABUDU']
         
         # Productos disponibles (títulos únicos)
         productos_disponibles = TVentas.objects.values('titulo').distinct().order_by('titulo')
@@ -239,15 +237,49 @@ def mapa_calor(request):
 
 @login_required
 def obtenerAnalisisProducto(request):
-    boton_scraping = request.GET.get('scraping')
-    if boton_scraping:
-        generarScrapingPorProducto(1)
-        messages.success(
-            request, 
-            "✅ Scraping iniciado para el producto seleccionado.!"
-        )
+    try:
+        boton_scraping  = request.GET.get('scraping')
+        marca_filtro    = request.GET.get('marca')
+        producto_filtro = request.GET.get('producto')
+        
+       # Obtener todas las opciones para los combobox
+        marcas_disponibles = TMarca.objects.values('id', 'nombre').distinct().order_by('nombre')
 
-    return render(request, 'venta/check_producto.html')
+        # Construir la consulta base
+        queryset = TProductos.objects.all()
+        
+        # Aplicar filtros según lo seleccionado
+        if marca_filtro and marca_filtro != '0' and marca_filtro != '[Seleccione]' and marca_filtro != 'None' and marca_filtro != '' :
+            queryset = queryset.filter(marca_fk_id=marca_filtro)
+
+        if producto_filtro and producto_filtro != '0' and producto_filtro != '[Seleccione]' and producto_filtro != 'None' and producto_filtro != '' :
+            queryset = queryset.filter(id=producto_filtro)
+
+        productos_disponibles = queryset.values(
+            'id', 'nombre', 'sku', 'precio_techo'
+        ).distinct().order_by('nombre')
+
+        logger.info(f"marca_filtro: {productos_disponibles}")
+
+        if boton_scraping == 'true':
+            generarScrapingPorProducto(marca_filtro)
+            messages.success(
+                request, 
+                "✅ Scraping iniciado para el producto seleccionado.!"
+            )
+            
+        context = {
+            'combo_select_marcas': {'lista':list(marcas_disponibles),'marca_seleccionada': marca_filtro},
+            'combo_productos': {'lista':list(productos_disponibles),'producto_seleccionado': producto_filtro},
+        }         
+        
+    except Exception as e:
+        context = {
+            'combo_select_marcas': {'lista':list(marcas_disponibles),'marca_seleccionada': marca_filtro},
+            'combo_productos': {'lista':list(productos_disponibles),'producto_seleccionado': producto_filtro},
+            'error': str(e)
+        }        
+    return render(request, 'venta/check_producto.html', context)
 
 @login_required
 def generarCloudWord(request):
