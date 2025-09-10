@@ -101,9 +101,7 @@ class TProductoCompetencia(models.Model):
         verbose_name_plural = 'ProductosCompetencia'
 
     def __str__(self):
-        return f"{self.nombre_producto} - {self.marca_competencia}"     
-    
-      
+        return f"{self.nombre_producto} - {self.marca_fk}"
     
     
     
