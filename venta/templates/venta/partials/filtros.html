@@ -5,7 +5,7 @@
         </svg>
         Filtros de Búsqueda
     </h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
             <label for="inpMarca" class="block text-sm font-medium text-gray-700 mb-1">Marca:</label>
             <select id="inpMarca" name="inpMarca" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md shadow-sm">
@@ -17,7 +17,17 @@
                 {% endfor %}
             </select>
         </div>
-
+        <div>
+            <label for="inpCategoria" class="block text-sm font-medium text-gray-700 mb-1">Categoria:</label>
+            <select id="inpCategoria" name="inpCategoria" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md shadow-sm">
+                <option selected>[Seleccione]</option>
+                {% for categoria in categoria_data.lista %}
+                    <option value="{{ categoria.id }}" {% if categoria.id == categoria_data.marca_seleccionada|add:0 %}selected{% endif %}>
+                        {{ categoria.nombre }} 
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
         <div>
             <label for="inpProducto" class="block text-sm font-medium text-gray-700 mb-1">Producto:</label>
             <select id="inpProducto" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md shadow-sm">

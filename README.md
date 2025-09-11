@@ -264,8 +264,9 @@ DATABASES = {
 
 ```
 - Paso : Validamos con el siguiente comando si la conexion funciona -> ´python manage.py dbshell´ *Si nos muestra la consola estamos bien*
-
-
+- GENERAR SEEDER 
+    - python manage.py makemigrations nombre_de_tu_app --empty --name seed_productos
+    - python manage.py migrate
 
 ## Modo Admin Django 
 - Paso : ejecutamos comando migrate ´python manage.py migrate´

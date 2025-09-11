@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import TVentas, TProductos, TProductoCompetencia, TMarca
+from .models import TVentas, TProductos, TProductoCompetencias, TMarcas, TCategorias
 
 
 @admin.register(TVentas)
@@ -11,12 +11,19 @@ class TVentasAdmin(admin.ModelAdmin):
     ordering       = ['-fecha_venta']
 
 
-@admin.register(TMarca)
+@admin.register(TMarcas)
 class TMarcaAdmin(admin.ModelAdmin):
     list_display  = ['id', 'nombre', 'descripcion']
     list_filter   = ['nombre', 'descripcion']
     search_fields = ['nombre']
     ordering      = ['-nombre']
+    
+@admin.register(TCategorias)
+class TCategoriaAdmin(admin.ModelAdmin):
+    list_display  = ['id', 'nombre', 'descripcion']
+    list_filter   = ['nombre', 'descripcion']
+    search_fields = ['nombre']
+    ordering      = ['-nombre']    
 
 @admin.register(TProductos)
 class TProductosAdmin(admin.ModelAdmin):
@@ -29,7 +36,7 @@ class TProductosInlineAdmin(admin.TabularInline):
     model = TProductos
     extra = 0
 
-@admin.register(TProductoCompetencia)
+@admin.register(TProductoCompetencias)
 class TProductoCompetenciaAdmin(admin.ModelAdmin):
     list_display  = ['id', 'nombre_producto']
     list_filter   = ['marca_fk', 'nombre_producto']

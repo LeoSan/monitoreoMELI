@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.conf import settings
 
-from venta.models import TVentas, TProductos, TProductoCompetencia, TMarca
+from venta.models import TVentas, TProductos, TMarcas, TCategorias
 
 # Propios 
 from .forms import CSVUploadForm
@@ -238,14 +238,16 @@ def mapa_calor(request):
 @login_required
 def obtenerAnalisisProducto(request):
     try:
-        boton_scraping  = request.GET.get('scraping')
-        marca_filtro    = request.GET.get('marca')
-        producto_filtro = request.GET.get('producto')
+        boton_scraping   = request.GET.get('scraping')
+        marca_filtro     = request.GET.get('marca')
+        categoria_filtro = request.GET.get('categoria_filtro')
+        producto_filtro  = request.GET.get('producto')
         val_filtro_producto = None
         competencia = []
         
        # Obtener todas las opciones para los combobox
-        marcas_disponibles = TMarca.objects.values('id', 'nombre').distinct().order_by('nombre')
+        marcas_disponibles = TMarcas.objects.filter(activo=True).values('id', 'nombre').distinct().order_by('nombre')
+        categorias_disponibles = TCategorias.objects.filter(activo=True).values('id', 'nombre').distinct().order_by('nombre')
 
         # Construir la consulta base
         query_set = TProductos.objects.all()
@@ -265,14 +267,11 @@ def obtenerAnalisisProducto(request):
         if boton_scraping == 'true' or val_filtro_producto is not None:
             logger.info(f"Ejecutando scraping para el producto ID: {producto_filtro}")
             competencia = updatePrecioCompetencia(producto_filtro)
-            logger.info(f"Scraping completado. Registros obtenidos: {len(competencia)}")
-            messages.success(
-                request, 
-                "✅ Scraping completado y precios actualizados exitosamente!"
-            )
+            #logger.info(f"Scraping completado. Registros obtenidos: {len(competencia)}")
             
         context = {
             'combo_select_marcas': {'lista':list(marcas_disponibles),'marca_seleccionada': marca_filtro},
+            'combo_select_categorias': {'lista':list(categorias_disponibles),'marca_seleccionada': categoria_filtro},
             'combo_productos': {'lista':list(productos_disponibles),'producto_seleccionado': producto_filtro},
             'competencia': {'lista':list(competencia),'producto_seleccionado': producto_filtro},
         }         
@@ -280,6 +279,7 @@ def obtenerAnalisisProducto(request):
     except Exception as e:
         context = {
             'combo_select_marcas': {'lista':list(marcas_disponibles),'marca_seleccionada': marca_filtro},
+            'combo_select_categorias': {'lista':list(categorias_disponibles),'marca_seleccionada': categoria_filtro},
             'combo_productos': {'lista':list(productos_disponibles),'producto_seleccionado': producto_filtro},
             'competencia': {'lista':list(competencia),'producto_seleccionado': producto_filtro},
             'error': str(e)

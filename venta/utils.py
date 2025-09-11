@@ -16,7 +16,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from dotenv import load_dotenv
 
-from .models import TVentas, TProductoCompetencia
+from .models import TVentas, TProductoCompetencias
 
 # Configurar logging
 load_dotenv()
@@ -358,7 +358,6 @@ def procesar_csv_ventas_completo(ruta_archivo, mapeo_columnas=None, mostrar_prog
         logger.error(f"Error general en procesamiento: {str(e)}")
         raise
 
-
 def iniciar_driver():
     """Inicializa y configura el driver de Selenium."""
     opts = Options()
@@ -370,8 +369,6 @@ def iniciar_driver():
     opts.add_argument("--disable-dev-shm-usage")
     service = Service(os.getenv('DRIVER_PATH'))
     return webdriver.Chrome(service=service, options=opts)
-
-
     
 def generarScrapingPorProducto(url:str):
     """
@@ -404,8 +401,6 @@ def generarScrapingPorProducto(url:str):
                 '//span[@itemprop="price"]'
             ))
         )
-        
-        
 
         # Solo procedemos si el elemento web fue encontrado
         if precio_element:
@@ -423,38 +418,33 @@ def generarScrapingPorProducto(url:str):
             'error': None
         }
         driver.quit()
-        logger.info("=== SCRAPING COMPLETADO ===")
+        #logger.info("=== SCRAPING COMPLETADO ===")
         
         return resultado_final
         
     except Exception as e:
-        logger.error(f"Error al procesar el producto : {str(e)}")
+        #logger.error(f"Error al procesar el producto : {str(e)}")
         resultado_final = {
             'precio': precio_meta,
-            'error': str(e)
-            #'error': 'Falla Scraping'
+            #'error': str(e)
+            'error': 'Falla Scraping'
         }
         return resultado_final
 
-
 def updatePrecioCompetencia(producto_filtro):
-    query_set_competencia = TProductoCompetencia.objects.all().filter(productos_fk_id=producto_filtro)
-    competencia = query_set_competencia.values(
-        'id', 'nombre_producto', 'precio', 'url', 'marca_fk__nombre'
-    ).distinct().order_by('nombre_producto')
+    # Usamos nuestro nuevo método para obtener la lista inicial
+    competencia_para_scrapear = TProductoCompetencias.objects.obtener_por_producto(producto_filtro)
     
-    for comp in competencia:
+    for comp in competencia_para_scrapear:
         # Obtenemos el nuevo precio desde el scraping
         list_competencia_scraping = generarScrapingPorProducto(comp['url'])
         nuevo_precio = list_competencia_scraping['precio']
 
-        # Actualizamos el registro en la base de datos de forma eficiente
-        TProductoCompetencia.objects.filter(id=comp['id']).update(precio=nuevo_precio)
+        # Actualizamos el registro en la base de datos
+        TProductoCompetencias.objects.filter(id=comp['id']).update(precio=nuevo_precio)
             
-    query_set_competencia = TProductoCompetencia.objects.all().filter(productos_fk_id=producto_filtro)
-    competencia = query_set_competencia.values(
-        'id', 'nombre_producto', 'precio', 'url', 'marca_fk__nombre'
-    ).distinct().order_by('nombre_producto')
+    # Volvemos a llamar a nuestro método para obtener los datos ya actualizados
+    competencia_actualizada = TProductoCompetencias.objects.obtener_por_producto(producto_filtro)
     
-    logger.info(f"Scraping y actualización total: {len(competencia)}")
-    return competencia
+    #logger.info(f"Scraping y actualización total: {len(competencia_actualizada)}")
+    return competencia_actualizada
