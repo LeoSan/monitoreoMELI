@@ -11,11 +11,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.conf import settings
 
-from venta.models import TVentas, TProductos, TProductoCompetencia, TMarca
+from venta.models import TVentas, TProductos, TMarcas, TCategorias
 
 # Propios 
 from .forms import CSVUploadForm
-from .utils import procesar_csv_ventas_completo, generarScrapingPorProducto
+from .utils import procesar_csv_ventas_completo, updatePrecioCompetencia
 
 logger = logging.getLogger(__name__)
 
@@ -238,47 +238,53 @@ def mapa_calor(request):
 @login_required
 def obtenerAnalisisProducto(request):
     try:
-        boton_scraping  = request.GET.get('scraping')
-        marca_filtro    = request.GET.get('marca')
-        producto_filtro = request.GET.get('producto')
+        boton_scraping   = request.GET.get('scraping')
+        marca_filtro     = request.GET.get('marca')
+        categoria_filtro = request.GET.get('categoria_filtro')
+        producto_filtro  = request.GET.get('producto')
+        val_filtro_producto = None
+        competencia = []
         
        # Obtener todas las opciones para los combobox
-        marcas_disponibles = TMarca.objects.values('id', 'nombre').distinct().order_by('nombre')
+        marcas_disponibles = TMarcas.objects.filter(activo=True).values('id', 'nombre').distinct().order_by('nombre')
+        categorias_disponibles = TCategorias.objects.filter(activo=True).values('id', 'nombre').distinct().order_by('nombre')
 
         # Construir la consulta base
-        queryset = TProductos.objects.all()
+        query_set = TProductos.objects.all()
         
         # Aplicar filtros según lo seleccionado
         if marca_filtro and marca_filtro != '0' and marca_filtro != '[Seleccione]' and marca_filtro != 'None' and marca_filtro != '' :
-            queryset = queryset.filter(marca_fk_id=marca_filtro)
+            query_set = query_set.filter(marca_fk_id=marca_filtro)
 
         if producto_filtro and producto_filtro != '0' and producto_filtro != '[Seleccione]' and producto_filtro != 'None' and producto_filtro != '' :
-            queryset = queryset.filter(id=producto_filtro)
+            val_filtro_producto = True
+            query_set = query_set.filter(id=producto_filtro)
 
-        productos_disponibles = queryset.values(
+        productos_disponibles = query_set.values(
             'id', 'nombre', 'sku', 'precio_techo'
         ).distinct().order_by('nombre')
 
-        logger.info(f"marca_filtro: {productos_disponibles}")
-
-        if boton_scraping == 'true':
-            generarScrapingPorProducto(marca_filtro)
-            messages.success(
-                request, 
-                "✅ Scraping iniciado para el producto seleccionado.!"
-            )
+        if boton_scraping == 'true' or val_filtro_producto is not None:
+            logger.info(f"Ejecutando scraping para el producto ID: {producto_filtro}")
+            competencia = updatePrecioCompetencia(producto_filtro)
+            #logger.info(f"Scraping completado. Registros obtenidos: {len(competencia)}")
             
         context = {
             'combo_select_marcas': {'lista':list(marcas_disponibles),'marca_seleccionada': marca_filtro},
+            'combo_select_categorias': {'lista':list(categorias_disponibles),'marca_seleccionada': categoria_filtro},
             'combo_productos': {'lista':list(productos_disponibles),'producto_seleccionado': producto_filtro},
+            'competencia': {'lista':list(competencia),'producto_seleccionado': producto_filtro},
         }         
         
     except Exception as e:
         context = {
             'combo_select_marcas': {'lista':list(marcas_disponibles),'marca_seleccionada': marca_filtro},
+            'combo_select_categorias': {'lista':list(categorias_disponibles),'marca_seleccionada': categoria_filtro},
             'combo_productos': {'lista':list(productos_disponibles),'producto_seleccionado': producto_filtro},
+            'competencia': {'lista':list(competencia),'producto_seleccionado': producto_filtro},
             'error': str(e)
-        }        
+        }
+        logger.error(f"Error en obtenerAnalisisProducto: {str(e)}")        
     return render(request, 'venta/check_producto.html', context)
 
 @login_required

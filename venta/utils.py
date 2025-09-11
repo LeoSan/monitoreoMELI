@@ -16,7 +16,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from dotenv import load_dotenv
 
-from .models import TVentas
+from .models import TVentas, TProductoCompetencias
 
 # Configurar logging
 load_dotenv()
@@ -358,8 +358,6 @@ def procesar_csv_ventas_completo(ruta_archivo, mapeo_columnas=None, mostrar_prog
         logger.error(f"Error general en procesamiento: {str(e)}")
         raise
 
-
-
 def iniciar_driver():
     """Inicializa y configura el driver de Selenium."""
     opts = Options()
@@ -371,10 +369,8 @@ def iniciar_driver():
     opts.add_argument("--disable-dev-shm-usage")
     service = Service(os.getenv('DRIVER_PATH'))
     return webdriver.Chrome(service=service, options=opts)
-
-
     
-def generarScrapingPorProducto( producto_id):
+def generarScrapingPorProducto(url:str):
     """
     Realiza el scraping de un producto usando un driver ya inicializado.
     
@@ -385,11 +381,13 @@ def generarScrapingPorProducto( producto_id):
     Returns:
         dict: Resultado completo del proceso.
     """
+    precio_meta = 0
+    
     try:
-        logger.info(f"=== INICIANDO SCRAPING DE {producto_id} ===")
+        logger.info(f"=== INICIANDO SCRAPING DE {url} ===")
         driver = iniciar_driver()
         # Simular una URL de producto para el ejemplo
-        url = "https://www.mercadolibre.com.mx/bicicleta-de-equilibrio-sin-pedales-llantas-de-aire-infantil-color-rojo/p/MLM45602311#polycard_client=search_best-seller&tracking_id=382d3386-c3ba-4f69-a37c-4193915f0724&wid=MLM3539214790&sid=search"
+        #url = "https://www.mercadolibre.com.mx/bicicleta-de-equilibrio-sin-pedales-llantas-de-aire-infantil-color-rojo/p/MLM45602311#polycard_client=search_best-seller&tracking_id=382d3386-c3ba-4f69-a37c-4193915f0724&wid=MLM3539214790&sid=search"
         driver.get(url)
         
         # Usar WebDriverWait para esperar de forma inteligente el elemento
@@ -403,20 +401,50 @@ def generarScrapingPorProducto( producto_id):
                 '//span[@itemprop="price"]'
             ))
         )
-        
-        precio_meta = precio_element.get_attribute('content')
-        logger.info(f"Precio encontrado para {producto_id}: {precio_meta}")
+
+        # Solo procedemos si el elemento web fue encontrado
+        if precio_element:
+            precio_str = precio_element.get_attribute('content')
+            try:
+                precio_num = float(precio_str)
+                if precio_num > 0:
+                    precio_meta = precio_num
+                    
+            except (ValueError, TypeError):
+                pass
         
         resultado_final = {
-            'producto_id': producto_id,
-            'precio': precio_meta
+            'precio': precio_meta,
+            'error': None
         }
         driver.quit()
-        logger.info("=== SCRAPING COMPLETADO ===")
+        #logger.info("=== SCRAPING COMPLETADO ===")
         
         return resultado_final
         
     except Exception as e:
-        logger.error(f"Error al procesar el producto {producto_id}: {str(e)}")
-        # Aquí puedes decidir si relanzar la excepción o devolver un resultado de error
-        return {'producto_id': producto_id, 'error': str(e)}
+        #logger.error(f"Error al procesar el producto : {str(e)}")
+        resultado_final = {
+            'precio': precio_meta,
+            #'error': str(e)
+            'error': 'Falla Scraping'
+        }
+        return resultado_final
+
+def updatePrecioCompetencia(producto_filtro):
+    # Usamos nuestro nuevo método para obtener la lista inicial
+    competencia_para_scrapear = TProductoCompetencias.objects.obtener_por_producto(producto_filtro)
+    
+    for comp in competencia_para_scrapear:
+        # Obtenemos el nuevo precio desde el scraping
+        list_competencia_scraping = generarScrapingPorProducto(comp['url'])
+        nuevo_precio = list_competencia_scraping['precio']
+
+        # Actualizamos el registro en la base de datos
+        TProductoCompetencias.objects.filter(id=comp['id']).update(precio=nuevo_precio)
+            
+    # Volvemos a llamar a nuestro método para obtener los datos ya actualizados
+    competencia_actualizada = TProductoCompetencias.objects.obtener_por_producto(producto_filtro)
+    
+    #logger.info(f"Scraping y actualización total: {len(competencia_actualizada)}")
+    return competencia_actualizada
