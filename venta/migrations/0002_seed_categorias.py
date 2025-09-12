@@ -73,46 +73,40 @@ def crear_un_producto_inicial(apps, schema_editor):
     categoria_asignar, created = TCategoria.objects.get_or_create(nombre='Andaderas y correpasillos para bebés')
 
     # 2. Lista 
-    dummy_productos = {
-        "nombre": "Andadera Caminadera Musical Interactiva Plegable Para Bebé Juguete Educativo Interactiva Seguro Multifuncional Color Azul Nube",
-        "descripcion": "Andadera Caminadera Musical Interactiva Plegable Para Bebé Juguete Educativo Interactiva Seguro Multifuncional Color Azul Nube",
-        "sku": "SKU12345",
-        "precio_tachado": 698.00,
-        "precio_oferta": 0,
-        "total_stock": 100,
-        "activo": True,
-        "imagen": "http://example.com/imagen.jpg",
-        "marca_fk": marca_NUBE,
-        "categoria_fk": categoria_asignar,  # Asignar la primera categoría disponible
-    }
+    dummy_productos_modelo = [
+        {
+            "nombre": "Andadera Caminadera Musical Interactiva Plegable Para Bebé Juguete Educativo Interactiva Seguro Multifuncional Color Azul Nube",
+            "descripcion": "Andadera Caminadera Musical Interactiva Plegable Para Bebé Juguete Educativo Interactiva Seguro Multifuncional Color Azul Nube",
+            "sku": "SKU12345",
+            "precio_tachado": 698.00,
+            "precio_oferta": 0,
+            "total_stock": 100,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_asignar,  # Asignar la primera categoría disponible
+        }        
+    ]
 
     # 3. Iteramos y creamos 
-    for producto in dummy_productos:
-        TProductos.objects.get_or_create(
-            nombre=producto['nombre'],
-            descripcion=producto['descripcion'],
-            sku=producto['sku'],
-            precio_tachado=producto['precio_tachado'],
-            precio_oferta=producto['precio_oferta'],
-            total_stock=producto['total_stock'],
-            activo=producto['activo'],
-            imagen=producto['imagen'],
-            marca_fk=producto['marca_fk'],
-            categoria_fk=producto['categoria_fk'],                   
-        )        
+    for producto_data in dummy_productos_modelo:
+        TProductos.objects.get_or_create(**producto_data)     
+
 
 def crear_una_competencia_inicial(apps, schema_editor):
 
     # Obtenemos los modelos necesarios para la migración
     TMarca = apps.get_model('venta', 'TMarcas')
     TProductos = apps.get_model('venta', 'TProductos')
+    TProductoCompetencias = apps.get_model('venta', 'TProductoCompetencias')
 
     # 1. Creamos 
     marca, created = TMarca.objects.get_or_create(nombre='VIGOREM')
     producto_asignar, created = TProductos.objects.get_or_create(nombre='Andadera Caminadera Musical Interactiva Plegable Para Bebé Juguete Educativo Interactiva Seguro Multifuncional Color Azul Nube')
 
     # 2. Lista 
-    dummy_competencia = {
+    dummy_competencia = [
+        {
         "nombre_producto": "Andadera Caminadera Musical Plegable KIDDOS Bebe Juguete Educativo Interactiva Segura Multifuncional Color Azul",
         "precio": 0,
         "precio_tachado": 0,
@@ -120,17 +114,11 @@ def crear_una_competencia_inicial(apps, schema_editor):
         "productos_fk": producto_asignar,
         "marca_fk": marca,
     }
+    ]
 
     # 3. Iteramos y creamos 
-    for producto in dummy_competencia:
-        TProductos.objects.get_or_create(
-            nombre_producto=producto['nombre_producto'],
-            precio=producto['precio'],
-            precio_tachado=producto['precio_tachado'],
-            url=producto['url'],
-            productos_fk=producto['productos_fk'],
-            marca_fk=producto['marca_fk'],
-        ) 
+    for producto_data in dummy_competencia:
+        TProductoCompetencias.objects.get_or_create(**producto_data)  
 
 
 class Migration(migrations.Migration):
@@ -144,4 +132,5 @@ class Migration(migrations.Migration):
         migrations.RunPython(crear_marcas_iniciales),
         migrations.RunPython(crear_categorias_iniciales),
         migrations.RunPython(crear_un_producto_inicial),
+        migrations.RunPython(crear_una_competencia_inicial),
     ]

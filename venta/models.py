@@ -118,6 +118,7 @@ class ProductoCompetenciaManager(models.Manager):
         ).values(
             'id', 'nombre_producto', 'precio', 'url', 'marca_fk__nombre'
         ).distinct().order_by('nombre_producto')    
+
     
 class TProductoCompetencias(models.Model):
     id              = models.BigAutoField(primary_key=True)
@@ -139,21 +140,21 @@ class TProductoCompetencias(models.Model):
     def __str__(self):
         return f"{self.nombre_producto} - {self.marca_fk}"
     
-    class TPublicacionesProductos(models.Model):
-        id          = models.BigAutoField(primary_key=True)
-        codigo_mlm  = models.CharField(max_length=255)
-        descripcion = models.TextField(null=True, blank=True)
-        activo      = models.BooleanField(default=True)
-        marca_fk    = models.ForeignKey(TMarcas, on_delete=models.CASCADE)## Cardinalidad  M .1
-        categoria_fk = models.ForeignKey(TCategorias, on_delete=models.CASCADE)## Cardinalidad  M .1
-        producto_fk  = models.ForeignKey(TProductos, on_delete=models.CASCADE)## Cardinalidad  M .1
-        class Meta:
-            db_table = 't_publicaciones_productos'  # Especifica el nombre exacto de la tabla
-            verbose_name = 'PublicacionesProductos'
-            verbose_name_plural = 'PublicacionesProductos'
+class TPublicacionesProductos(models.Model):
+    id          = models.BigAutoField(primary_key=True)
+    codigo_mlm  = models.CharField(max_length=255)
+    descripcion = models.TextField(null=True, blank=True)
+    activo      = models.BooleanField(default=True)
+    marca_fk    = models.ForeignKey(TMarcas, on_delete=models.CASCADE)## Cardinalidad  M .1
+    categoria_fk = models.ForeignKey(TCategorias, on_delete=models.CASCADE)## Cardinalidad  M .1
+    producto_fk  = models.ForeignKey(TProductos, on_delete=models.CASCADE)## Cardinalidad  M .1
+    class Meta:
+        db_table = 't_publicaciones_productos'  # Especifica el nombre exacto de la tabla
+        verbose_name = 'PublicacionesProductos'
+        verbose_name_plural = 'PublicacionesProductos'
 
-        def __str__(self):
-            return f"{self.codigo_mlm} - {self.descripcion}"
+    def __str__(self):
+        return f"{self.codigo_mlm} - {self.descripcion}"
     
     
     

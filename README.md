@@ -365,3 +365,18 @@ operacion/
 - Desarrollo de arquitectura 
 - Desarrollo de Base de Datos
 - Desarrollo de UploadCsv  
+
+
+# Comandos MAC  
+docker compose down -v
+docker compose up --build -d
+
+# Aplicar migraciones de Django
+docker compose exec django python manage.py makemigrations
+docker compose exec django python manage.py migrate
+
+# Verificar migraciones aplicadas
+docker compose exec django python manage.py showmigrations
+
+3. Crear Superusuario
+docker compose exec django python manage.py createsuperuser
