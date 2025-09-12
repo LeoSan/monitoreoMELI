@@ -388,6 +388,7 @@ def generarScrapingPorProducto(url:str):
     Función de validación para confirmar que el elemento es encontrado.
     """
     precio_final = 0.0
+    precio_original = 0.0
     driver = None
     
     try:
@@ -398,7 +399,7 @@ def generarScrapingPorProducto(url:str):
         driver.get(url)
         wait = WebDriverWait(driver, 15)
         
-        # Usamos un bloque try/except específico para la búsqueda del elemento
+       # ---> Bloque para extraer el PRECIO oferta
         try:
             #logger.info("Buscando el elemento <meta> con itemprop='price'...")
             precio_element = wait.until(
@@ -426,8 +427,30 @@ def generarScrapingPorProducto(url:str):
             # Si después de 15 segundos no lo encuentra, el código entrará aquí
             logger.error("VALIDACIÓN FALLIDA: El elemento con XPath '//meta[@itemprop=\"price\"]' NO FUE ENCONTRADO en la página.")
         
+        # ---> Bloque para extraer el PRECIO ORIGINAL
+        try:
+            logger.info("Buscando el precio original (tachado)...")
+            precio_original_element = wait.until(
+                EC.presence_of_element_located((
+                    By.XPATH,
+                    # Usamos el XPath específico que construimos
+                    "//s[contains(@class, 'ui-pdp-price__original-value')]//span[@class='andes-money-amount__fraction']"
+                ))
+            )
+            # Obtenemos el texto del elemento y lo convertimos a número
+            precio_original_texto = precio_original_element.text
+            precio_original = float(precio_original_texto.replace(',', '')) # Se añade replace por si hay miles
+            #logger.info(f"ÉXITO: Precio original encontrado: {precio_original}")
+
+        except TimeoutException:
+            # Esto es normal si el producto no tiene descuento. No es un error crítico.
+            logger.warning("AVISO: No se encontró un precio original. Es posible que el producto no tenga descuento.")
+            precio_original = 0.0 # O puedes asignarle el mismo valor que precio_final
+
+        # ---> Añadimos el nuevo dato al resultado        
         resultado_final = {
             'precio': precio_final,
+            'precio_original': precio_original,
             'error': None
         }
 
@@ -435,6 +458,7 @@ def generarScrapingPorProducto(url:str):
         logger.error(f"Error durante el proceso de validación: {str(e)}")
         resultado_final = {
             'precio': precio_final,
+            'precio_original': precio_original,
             'error': str(e)
         }
     finally:
@@ -451,10 +475,8 @@ def updatePrecioCompetencia(producto_filtro):
     for comp in competencia_para_scrapear:
         # Obtenemos el nuevo precio desde el scraping
         list_competencia_scraping = generarScrapingPorProducto(comp['url'])
-        nuevo_precio = list_competencia_scraping['precio']
-
         # Actualizamos el registro en la base de datos
-        TProductoCompetencias.objects.filter(id=comp['id']).update(precio=nuevo_precio)
+        TProductoCompetencias.objects.filter(id=comp['id']).update(precio=list_competencia_scraping['precio'], precio_tachado=list_competencia_scraping['precio_original'])
         if list_competencia_scraping['error'] != None:
             logger.error(f"Error En el ScrapinG {comp['id']}: {list_competencia_scraping['error']}")
             

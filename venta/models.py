@@ -116,7 +116,7 @@ class ProductoCompetenciaManager(models.Manager):
         return self.get_queryset().filter(
             productos_fk_id=producto_id
         ).values(
-            'id', 'nombre_producto', 'precio', 'url', 'marca_fk__nombre'
+            'id', 'nombre_producto', 'precio', 'url', 'marca_fk__nombre', 'precio_tachado'
         ).distinct().order_by('nombre_producto')    
 
     
@@ -131,6 +131,13 @@ class TProductoCompetencias(models.Model):
     
     # Clase Abtracta para manejar consultas comunes
     objects = ProductoCompetenciaManager()    
+    
+    # Añadimos related_name para una mejor legibilidad en las consultas
+    productos_fk = models.ForeignKey(
+        TProductos, 
+        on_delete=models.CASCADE,
+        related_name='competidores'  # <-- ¡ESTA ES LA MEJORA!
+    )   
     
     class Meta:
         db_table = 't_productos_competencia'  # Especifica el nombre exacto de la tabla

@@ -287,6 +287,51 @@ def obtenerAnalisisProducto(request):
 
     return render(request, 'venta/check_producto.html', context)
 
+
+# views.py
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.contrib import messages
+import os
+from .models import TProductos, TMarcas, TCategorias # Asegúrate de importar tus modelos
+
+@login_required
+def obtenerListadoAnalisisProductoCompetencia(request):
+    try:
+        marca_filtro = request.GET.get('marca')
+        categoria_filtro = request.GET.get('categoria_filtro')
+        
+        # --- Consulta Base ---
+        query_set = TProductos.objects.all()
+        
+        # --- Aplicar Filtros ---
+        if marca_filtro and marca_filtro not in ['0', '', 'None', '[Seleccione]']:
+            query_set = query_set.filter(marca_fk_id=marca_filtro)
+            
+        # --- MEJORA CLAVE: La consulta optimizada ---
+        # 1. Quitamos .values() para trabajar con objetos.
+        # 2. Usamos select_related para la relación ForeignKey (marca).
+        # 3. Usamos prefetch_related para la relación inversa (competidores).
+        productos_optimizados = query_set.select_related('marca_fk').prefetch_related('competidores').order_by('nombre')
+        
+        # --- Consultas para los combos (esto se mantiene igual) ---
+        marcas_disponibles = TMarcas.objects.filter(activo=True).values('id', 'nombre').distinct().order_by('nombre')
+        categorias_disponibles = TCategorias.objects.filter(activo=True).values('id', 'nombre').distinct().order_by('nombre')
+
+    except Exception as e:
+        messages.error(request, f"{os.getenv('MSJ_ERROR')} Concepto: {str(e)}")
+        # En caso de error, inicializamos la lista para que la plantilla no falle
+        productos_optimizados = []
+
+    context = {
+        'combo_select_marcas': {'lista': list(marcas_disponibles), 'marca_seleccionada': marca_filtro},
+        'combo_select_categorias': {'lista': list(categorias_disponibles), 'categoria_seleccionada': categoria_filtro},
+        'listado_productos': productos_optimizados,
+    }
+
+    return render(request, 'venta/check_producto_competencia.html', context)
+
 @login_required
 def generarCloudWord(request):
     return render(request, 'venta/cloud_word.html') 

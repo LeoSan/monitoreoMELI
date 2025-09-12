@@ -378,5 +378,6 @@ docker compose exec django python manage.py migrate
 # Verificar migraciones aplicadas
 docker compose exec django python manage.py showmigrations
 
-3. Crear Superusuario
+# Crear Superusuario
 docker compose exec django python manage.py createsuperuser
+docker compose logs -f django

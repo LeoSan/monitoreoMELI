@@ -8,19 +8,26 @@ ENV PYTHONUNBUFFERED 1
 # Directorio de trabajo
 WORKDIR /app
 
-# Instalar dependencias del sistema operativo (usando apk) y el navegador Chrome
-# --no-cache evita guardar el índice de paquetes, manteniendo la imagen ligera
+# ---- PASO 1: INSTALAR DEPENDENCIAS DE CONSTRUCCIÓN ----
+# Se necesitan para compilar numpy, pandas y otras librerías científicas.
+RUN apk add --no-cache \
+    build-base \
+    python3-dev \
+    gfortran
+
+# ---- PASO 2: INSTALAR DEPENDENCIAS DE SELENIUM ----
+# Se necesitan para que el navegador Chrome pueda ejecutarse.
 RUN apk add --no-cache \
     chromium \
     chromium-chromedriver \
     udev \
     nss
 
-# Instalar dependencias Python
+# ---- PASO 3: INSTALAR DEPENDENCIAS DE PYTHON ----
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar código
+# Copiar el código de la aplicación
 COPY . .
 
 # Puerto de exposición
