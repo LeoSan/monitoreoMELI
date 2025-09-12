@@ -13,12 +13,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.common.exceptions import TimeoutException # Importar la excepción de Timeout
+
 
 from dotenv import load_dotenv
 
 from .models import TVentas, TProductoCompetencias
 
-# Configurar logging
+# Configuracions
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -360,79 +362,90 @@ def procesar_csv_ventas_completo(ruta_archivo, mapeo_columnas=None, mostrar_prog
 
 def iniciar_driver():
     """Inicializa y configura el driver de Selenium."""
+    logger.info("Inicializando el WebDriver de Chrome...")
     opts = Options()
+    # Todas tus opciones están perfectas, no las cambies
     opts.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.7258.115 Safari/537.36")
-    opts.add_argument("--disable-search-engine-choice-screen")
     opts.add_argument("--headless")
     opts.add_argument("--no-sandbox")
     opts.add_argument("--disable-gpu")
     opts.add_argument("--disable-dev-shm-usage")
-    service = Service(os.getenv('DRIVER_PATH'))
-    return webdriver.Chrome(service=service, options=opts)
+    opts.add_argument("--window-size=1920,1080")
+
+    # --- CAMBIO PRINCIPAL ---
+    # Ya no usamos ChromeDriverManager. Selenium encontrará automáticamente
+    # el chromedriver que instalamos con "apk" en el Dockerfile.
+    try:
+        driver = webdriver.Chrome(options=opts)
+        logger.info("WebDriver inicializado correctamente.")
+        return driver
+    except Exception as e:
+        logger.error(f"Error al inicializar el driver: {e}")
+        return None
     
 def generarScrapingPorProducto(url:str):
     """
-    Realiza el scraping de un producto usando un driver ya inicializado.
-    
-    Args:
-        driver (WebDriver): Instancia de Selenium WebDriver.
-        producto_id (int): PK del producto en TProductos.
-        
-    Returns:
-        dict: Resultado completo del proceso.
+    Función de validación para confirmar que el elemento es encontrado.
     """
-    precio_meta = 0
+    precio_final = 0.0
+    driver = None
     
     try:
-        logger.info(f"=== INICIANDO SCRAPING DE {url} ===")
         driver = iniciar_driver()
-        # Simular una URL de producto para el ejemplo
-        #url = "https://www.mercadolibre.com.mx/bicicleta-de-equilibrio-sin-pedales-llantas-de-aire-infantil-color-rojo/p/MLM45602311#polycard_client=search_best-seller&tracking_id=382d3386-c3ba-4f69-a37c-4193915f0724&wid=MLM3539214790&sid=search"
-        driver.get(url)
-        
-        # Usar WebDriverWait para esperar de forma inteligente el elemento
-        # Se espera 10 segundos como máximo a que el elemento sea visible
-        wait = WebDriverWait(driver, 10)
-        
-        # ---- CAMBIO PRINCIPAL: Se usa el selector XPath ----
-        precio_element = wait.until(
-            EC.visibility_of_element_located((
-                By.XPATH, 
-                '//span[@itemprop="price"]'
-            ))
-        )
+        if not driver:
+            raise Exception("El WebDriver no se pudo inicializar.")
 
-        # Solo procedemos si el elemento web fue encontrado
-        if precio_element:
-            precio_str = precio_element.get_attribute('content')
-            try:
-                precio_num = float(precio_str)
-                if precio_num > 0:
-                    precio_meta = precio_num
-                    
-            except (ValueError, TypeError):
-                pass
+        driver.get(url)
+        wait = WebDriverWait(driver, 15)
+        
+        # Usamos un bloque try/except específico para la búsqueda del elemento
+        try:
+            #logger.info("Buscando el elemento <meta> con itemprop='price'...")
+            precio_element = wait.until(
+                EC.presence_of_element_located((
+                    By.XPATH, 
+                    '//meta[@itemprop="price"]'
+                ))
+            )
+            
+            # Si el código llega aquí, ¡el elemento fue encontrado!
+            logger.info("¡ÉXITO! El elemento fue encontrado.")
+            
+            # Ahora vamos a inspeccionar lo que encontramos para validarlo
+            tag_name = precio_element.tag_name
+            content_value = precio_element.get_attribute('content')
+            
+           # logger.info(f"   -> Tipo de etiqueta: {tag_name}")
+           # logger.info(f"   -> Valor del atributo 'content': {content_value}")
+            
+            # Intentamos la conversión para ver si el valor es numérico
+            precio_final = float(content_value)
+            #logger.info(f"   -> Conversión a número exitosa: {precio_final}")
+
+        except TimeoutException:
+            # Si después de 15 segundos no lo encuentra, el código entrará aquí
+            logger.error("VALIDACIÓN FALLIDA: El elemento con XPath '//meta[@itemprop=\"price\"]' NO FUE ENCONTRADO en la página.")
         
         resultado_final = {
-            'precio': precio_meta,
+            'precio': precio_final,
             'error': None
         }
-        driver.quit()
-        #logger.info("=== SCRAPING COMPLETADO ===")
-        
-        return resultado_final
-        
+
     except Exception as e:
-        #logger.error(f"Error al procesar el producto : {str(e)}")
+        logger.error(f"Error durante el proceso de validación: {str(e)}")
         resultado_final = {
-            'precio': precio_meta,
-            #'error': str(e)
-            'error': 'Falla Scraping'
+            'precio': precio_final,
+            'error': str(e)
         }
-        return resultado_final
+    finally:
+        if driver:
+            driver.quit()
+            logger.info("=== VALIDACIÓN COMPLETADA (DRIVER CERRADO) ===")
+
+    return resultado_final
 
 def updatePrecioCompetencia(producto_filtro):
-    # Usamos nuestro nuevo método para obtener la lista inicial
+    # Lista de Competencias 
     competencia_para_scrapear = TProductoCompetencias.objects.obtener_por_producto(producto_filtro)
     
     for comp in competencia_para_scrapear:
@@ -442,9 +455,10 @@ def updatePrecioCompetencia(producto_filtro):
 
         # Actualizamos el registro en la base de datos
         TProductoCompetencias.objects.filter(id=comp['id']).update(precio=nuevo_precio)
+        if list_competencia_scraping['error'] != None:
+            logger.error(f"Error En el ScrapinG {comp['id']}: {list_competencia_scraping['error']}")
             
     # Volvemos a llamar a nuestro método para obtener los datos ya actualizados
     competencia_actualizada = TProductoCompetencias.objects.obtener_por_producto(producto_filtro)
-    
-    #logger.info(f"Scraping y actualización total: {len(competencia_actualizada)}")
-    return competencia_actualizada
+    resultado =  {'lista':competencia_actualizada,'error': list_competencia_scraping['error']}
+    return resultado

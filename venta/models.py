@@ -88,15 +88,18 @@ class TCategorias(models.Model):
         return f"{self.nombre} - {self.activo}"        
 
 class TProductos(models.Model):
-    id          = models.BigAutoField(primary_key=True)
-    nombre      = models.CharField(max_length=255)
-    descripcion = models.TextField(null=True, blank=True)
-    sku         = models.CharField(max_length=255,null=True, blank=True)
-    precio_techo= models.FloatField(null=True, blank=True)
-    total_stock = models.BigIntegerField(null=True, blank=True)
-    activo      = models.BooleanField(default=True)
-    marca_fk    = models.ForeignKey(TMarcas, on_delete=models.CASCADE)## Cardinalidad  M .1
-    categoria_fk    = models.ForeignKey(TCategorias, on_delete=models.CASCADE)## Cardinalidad  M .1
+    id            = models.BigAutoField(primary_key=True)
+    nombre        = models.CharField(max_length=255)
+    descripcion   = models.TextField(null=True, blank=True)
+    sku           = models.CharField(max_length=255,null=True, blank=True)
+    precio_tachado= models.FloatField(null=True, blank=True)
+    precio_oferta = models.FloatField(null=True, blank=True)
+    total_stock   = models.BigIntegerField(null=True, blank=True)
+    activo        = models.BooleanField(default=True)
+    imagen        = models.TextField(null=True, blank=True)
+    marca_fk      = models.ForeignKey(TMarcas, on_delete=models.CASCADE)## Cardinalidad  M .1
+    categoria_fk  = models.ForeignKey(TCategorias, on_delete=models.CASCADE)## Cardinalidad  M .1
+    
     class Meta:
         db_table = 't_productos'  # Especifica el nombre exacto de la tabla
         verbose_name = 'Producto'
@@ -120,6 +123,7 @@ class TProductoCompetencias(models.Model):
     id              = models.BigAutoField(primary_key=True)
     nombre_producto = models.CharField(max_length=255)
     precio          = models.FloatField(null=True, blank=True)
+    precio_tachado  = models.FloatField(null=True, blank=True)
     url             = models.TextField(null=True, blank=True)
     productos_fk    = models.ForeignKey(TProductos, on_delete=models.CASCADE)## Cardinalidad  M .1
     marca_fk        = models.ForeignKey(TMarcas, on_delete=models.CASCADE)## Cardinalidad  M .1 

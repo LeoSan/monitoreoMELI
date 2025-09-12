@@ -1,4 +1,5 @@
-FROM python:3.11
+# Usamos la imagen oficial de Python basada en Alpine Linux
+FROM python:3.11-alpine
 
 # Variables de entorno
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -7,15 +8,13 @@ ENV PYTHONUNBUFFERED 1
 # Directorio de trabajo
 WORKDIR /app
 
-# Instalar dependencias del sistema para PostgreSQL
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-    postgresql-client \
-    gcc \
-    python3-dev \
-    libpq-dev \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+# Instalar dependencias del sistema operativo (usando apk) y el navegador Chrome
+# --no-cache evita guardar el índice de paquetes, manteniendo la imagen ligera
+RUN apk add --no-cache \
+    chromium \
+    chromium-chromedriver \
+    udev \
+    nss
 
 # Instalar dependencias Python
 COPY requirements.txt .

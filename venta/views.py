@@ -16,10 +16,15 @@ from venta.models import TVentas, TProductos, TMarcas, TCategorias
 # Propios 
 from .forms import CSVUploadForm
 from .utils import procesar_csv_ventas_completo, updatePrecioCompetencia
+from dotenv import load_dotenv
 
+# Configuraciones
+load_dotenv()
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 @login_required
+
+
 def dashboard_view(request):
     context = {
         'user': 'Leonard',
@@ -243,16 +248,14 @@ def obtenerAnalisisProducto(request):
         categoria_filtro = request.GET.get('categoria_filtro')
         producto_filtro  = request.GET.get('producto')
         val_filtro_producto = None
-        competencia = []
+        competencia  =  {'lista':[],'error': None}
         
-       # Obtener todas las opciones para los combobox
+       # Consulta BDs
         marcas_disponibles = TMarcas.objects.filter(activo=True).values('id', 'nombre').distinct().order_by('nombre')
         categorias_disponibles = TCategorias.objects.filter(activo=True).values('id', 'nombre').distinct().order_by('nombre')
-
-        # Construir la consulta base
         query_set = TProductos.objects.all()
-        
-        # Aplicar filtros según lo seleccionado
+                
+        # FILTROS 
         if marca_filtro and marca_filtro != '0' and marca_filtro != '[Seleccione]' and marca_filtro != 'None' and marca_filtro != '' :
             query_set = query_set.filter(marca_fk_id=marca_filtro)
 
@@ -261,30 +264,27 @@ def obtenerAnalisisProducto(request):
             query_set = query_set.filter(id=producto_filtro)
 
         productos_disponibles = query_set.values(
-            'id', 'nombre', 'sku', 'precio_techo'
+            'id', 'nombre', 'sku', 'precio_tachado', 'precio_oferta', 'marca_fk__nombre'
         ).distinct().order_by('nombre')
 
         if boton_scraping == 'true' or val_filtro_producto is not None:
             logger.info(f"Ejecutando scraping para el producto ID: {producto_filtro}")
-            competencia = updatePrecioCompetencia(producto_filtro)
-            #logger.info(f"Scraping completado. Registros obtenidos: {len(competencia)}")
-            
-        context = {
-            'combo_select_marcas': {'lista':list(marcas_disponibles),'marca_seleccionada': marca_filtro},
-            'combo_select_categorias': {'lista':list(categorias_disponibles),'marca_seleccionada': categoria_filtro},
-            'combo_productos': {'lista':list(productos_disponibles),'producto_seleccionado': producto_filtro},
-            'competencia': {'lista':list(competencia),'producto_seleccionado': producto_filtro},
-        }         
+            competencia = updatePrecioCompetencia(producto_filtro)            
+            if type(competencia['error']) is not 'NoneType':
+                messages.success(request, os.getenv('MSJ_SUCCESS'))
+            else:
+                messages.error(request, f"{os.getenv('MSJ_ERROR')}  Concepto: {competencia['error']}")
         
     except Exception as e:
-        context = {
-            'combo_select_marcas': {'lista':list(marcas_disponibles),'marca_seleccionada': marca_filtro},
-            'combo_select_categorias': {'lista':list(categorias_disponibles),'marca_seleccionada': categoria_filtro},
-            'combo_productos': {'lista':list(productos_disponibles),'producto_seleccionado': producto_filtro},
-            'competencia': {'lista':list(competencia),'producto_seleccionado': producto_filtro},
-            'error': str(e)
-        }
-        logger.error(f"Error en obtenerAnalisisProducto: {str(e)}")        
+        messages.error(request, f"{os.getenv('MSJ_ERROR')}  Concepto: {str(e)}")
+
+    context = {
+        'combo_select_marcas': {'lista':list(marcas_disponibles),'marca_seleccionada': marca_filtro},
+        'combo_select_categorias': {'lista':list(categorias_disponibles),'marca_seleccionada': categoria_filtro},
+        'combo_productos': {'lista':list(productos_disponibles),'producto_seleccionado': producto_filtro},
+        'competencia': {'lista':list(competencia['lista']),'producto_seleccionado': producto_filtro},
+    } 
+
     return render(request, 'venta/check_producto.html', context)
 
 @login_required
