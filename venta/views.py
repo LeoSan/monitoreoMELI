@@ -301,6 +301,7 @@ def obtenerListadoAnalisisProductoCompetencia(request):
     try:
         marca_filtro = request.GET.get('marca')
         categoria_filtro = request.GET.get('categoria_filtro')
+        productos_optimizados = []
         
         # --- Consulta Base ---
         query_set = TProductos.objects.all()
@@ -308,12 +309,7 @@ def obtenerListadoAnalisisProductoCompetencia(request):
         # --- Aplicar Filtros ---
         if marca_filtro and marca_filtro not in ['0', '', 'None', '[Seleccione]']:
             query_set = query_set.filter(marca_fk_id=marca_filtro)
-            
-        # --- MEJORA CLAVE: La consulta optimizada ---
-        # 1. Quitamos .values() para trabajar con objetos.
-        # 2. Usamos select_related para la relación ForeignKey (marca).
-        # 3. Usamos prefetch_related para la relación inversa (competidores).
-        productos_optimizados = query_set.select_related('marca_fk').prefetch_related('competidores').order_by('nombre')
+            productos_optimizados = query_set.select_related('marca_fk').prefetch_related('competidores').order_by('nombre')
         
         # --- Consultas para los combos (esto se mantiene igual) ---
         marcas_disponibles = TMarcas.objects.filter(activo=True).values('id', 'nombre').distinct().order_by('nombre')
@@ -322,7 +318,7 @@ def obtenerListadoAnalisisProductoCompetencia(request):
     except Exception as e:
         messages.error(request, f"{os.getenv('MSJ_ERROR')} Concepto: {str(e)}")
         # En caso de error, inicializamos la lista para que la plantilla no falle
-        productos_optimizados = []
+        
 
     context = {
         'combo_select_marcas': {'lista': list(marcas_disponibles), 'marca_seleccionada': marca_filtro},
