@@ -287,18 +287,10 @@ def obtenerAnalisisProducto(request):
 
     return render(request, 'venta/check_producto.html', context)
 
-
-# views.py
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.contrib import messages
-import os
-from .models import TProductos, TMarcas, TCategorias # Asegúrate de importar tus modelos
-
 @login_required
 def obtenerListadoAnalisisProductoCompetencia(request):
     try:
+        boton_scraping   = request.GET.get('scraping')
         marca_filtro = request.GET.get('marca')
         categoria_filtro = request.GET.get('categoria_filtro')
         productos_optimizados = []
@@ -314,11 +306,19 @@ def obtenerListadoAnalisisProductoCompetencia(request):
         # --- Consultas para los combos (esto se mantiene igual) ---
         marcas_disponibles = TMarcas.objects.filter(activo=True).values('id', 'nombre').distinct().order_by('nombre')
         categorias_disponibles = TCategorias.objects.filter(activo=True).values('id', 'nombre').distinct().order_by('nombre')
-
+        
+        if boton_scraping == 'true':
+            for productos in productos_optimizados:
+                logger.info(f"Ejecutando scraping para el producto ID: {productos.id}")
+                competencia = updatePrecioCompetencia(productos.id)            
+                if type(competencia['error']) is not 'NoneType':
+                    messages.success(request, os.getenv('MSJ_SUCCESS'))
+                else:
+                    messages.error(request, f"{os.getenv('MSJ_ERROR')}  Concepto: {competencia['error']}")        
+        
     except Exception as e:
         messages.error(request, f"{os.getenv('MSJ_ERROR')} Concepto: {str(e)}")
         # En caso de error, inicializamos la lista para que la plantilla no falle
-        
 
     context = {
         'combo_select_marcas': {'lista': list(marcas_disponibles), 'marca_seleccionada': marca_filtro},

@@ -97,6 +97,7 @@ class TProductos(models.Model):
     total_stock   = models.BigIntegerField(null=True, blank=True)
     activo        = models.BooleanField(default=True)
     imagen        = models.TextField(null=True, blank=True)
+    url           = models.TextField(null=True, blank=True)
     marca_fk      = models.ForeignKey(TMarcas, on_delete=models.CASCADE)## Cardinalidad  M .1
     categoria_fk  = models.ForeignKey(TCategorias, on_delete=models.CASCADE)## Cardinalidad  M .1
     

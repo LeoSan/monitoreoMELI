@@ -37,7 +37,7 @@
                                     <select id="inpMarca" name="inpMarca" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md shadow-sm">
                                         <option selected>[Seleccione]</option>
                                         {% for marca in combo_select_marcas.lista %}
-                                            <option value="{{ marca.id }}" {% if marca.id == marcas_data.marca_seleccionada|add:0 %}selected{% endif %}>
+                                            <option value="{{ marca.id }}" {% if marca.id == combo_select_marcas.marca_seleccionada|add:0 %}selected{% endif %}>
                                                 {{ marca.nombre }} 
                                             </option>
                                         {% endfor %}
@@ -220,15 +220,11 @@
         function aplicarScraping() {
             const scraping = 'true';
             const marca = document.getElementById('inpMarca').value;
-            const producto = document.getElementById('inpProducto').value;
-            const categoria = document.getElementById('inpCategoria').value;
             
             // Construir URL con parámetros
             const params = new URLSearchParams();
             if (scraping) params.append('scraping', scraping);
             if (marca) params.append('marca', marca);
-            if (producto) params.append('producto', producto);
-            if (categoria) params.append('categoria', categoria);
             
             // Redirigir con filtros
             const url = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
