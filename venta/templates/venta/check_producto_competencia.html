@@ -5,6 +5,9 @@
 {% block content %}
     
     <div class="flex h-screen">
+
+        {% include 'venta/partials/loading.html' %}
+   
         <!-- Include Sidebar -->
          {% include 'venta/partials/sidebar.html' %}
 
@@ -111,17 +114,6 @@
                                                         {{ producto.marca_fk.nombre }}
                                                     </span>
                                                 </td>
-                                                {% comment %} <td class="px-6 py-4">
-                                                    <div class="text-sm font-medium text-gray-900 max-w-md">
-                                                        {{ producto.nombre|truncatechars:150 }}
-                                                    </div>
-                                                    <a href="{{producto.url}}" 
-                                                        target="_blank" 
-                                                        class="text-blue-600 hover:text-blue-900 inline-flex items-center">
-                                                        Ver
-                                                        <i class="fa-solid fa-eye ml-1 w-4 h-4"></i>
-                                                    </a>  
-                                                </td> {% endcomment %}
 
                                                 <td class="px-6 py-4 max-w-xs"> 
                                                     <div class="relative group">
@@ -164,35 +156,57 @@
                                                 <td class="px-6 py-4 text-sm text-gray-700">
                                                     
                                                         {% for competidor in producto.competidores.all %}
-                                                            <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                                                                <div class="mb-2 pb-2 border-b last:border-b-0 last:mb-0 last:pb-0">
-                                                                    <div class="relative group">
-                                                                        <div class="text-sm font-medium text-gray-900 truncate cursor-pointer">
-                                                                             {{ competidor.nombre_producto|truncatechars:25 }}
+                                                            {% with precio_nuestro=producto.precio_oferta|default:producto.precio_tachado %}
+                                                                <div class="p-4 rounded-lg border 
+                                                                            {% if precio_nuestro < competidor.precio %}
+                                                                                bg-green-50 border-green-200  {# SUCCESS: Clases si somos más baratos #}
+                                                                            {% elif precio_nuestro > competidor.precio %}
+                                                                                bg-red-50 border-red-200      {# WARNING: Clases si somos más caros #}
+                                                                            {% else %}
+                                                                                bg-yellow-50 border-yellow-200{# NEUTRAL: Clases si valemos lo mismo #}
+                                                                            {% endif %}
+                                                                        ">
+                                                                    <div class="mb-2 pb-2 border-b last:border-b-0 last:mb-0 last:pb-0">
+                                                                        <div class="relative group">
+                                                                            <div class="text-sm font-medium text-gray-900 truncate cursor-pointer">
+                                                                                {{ competidor.nombre_producto|truncatechars:25 }}
+                                                                            </div>
+                                                                            <div class="absolute bottom-full left-1/2 z-10 mb-2
+                                                                                        -translate-x-1/2 transform
+                                                                                        w-max max-w-sm rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white shadow-sm
+                                                                                        opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                                                                {{ competidor.nombre_producto }}
+                                                                                <div class="absolute left-1/2 top-full -translate-x-1/2 transform border-4 border-transparent border-t-gray-900"></div>
+                                                                            </div>
+                                                                        </div>                                                                    
+                                                                        
+                                                                        <div class="flex items-center gap-2 mt-1">
+                                                                            <a href="{{competidor.url}}" 
+                                                                                target="_blank" 
+                                                                                class="text-blue-600 hover:text-blue-900 inline-flex items-center">
+                                                                                Ver
+                                                                                <i class="fa-solid fa-eye ml-1 w-4 h-4"></i>
+                                                                            </a>  
+                                                                            <p class="font-bold text-xs text-green-600">${{ competidor.precio|floatformat:2 }}</p>
+                                                                            <p class="font-bold text-xs text-gray-500 line-through">${{ competidor.precio_tachado|floatformat:2 }}</p>
                                                                         </div>
-                                                                        <div class="absolute bottom-full left-1/2 z-10 mb-2
-                                                                                    -translate-x-1/2 transform
-                                                                                    w-max max-w-sm rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white shadow-sm
-                                                                                    opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                                                                             {{ competidor.nombre_producto }}
-                                                                            <div class="absolute left-1/2 top-full -translate-x-1/2 transform border-4 border-transparent border-t-gray-900"></div>
-                                                                        </div>
-                                                                    </div>                                                                    
-                                                                    
-                                                                    <div class="flex items-center gap-2">
+                                                                        <p class="mt-2 text-xs font-semibold 
+                                                                            {% if precio_nuestro < competidor.precio %}text-green-800
+                                                                            {% elif precio_nuestro > competidor.precio %}text-red-800
+                                                                            {% else %}text-yellow-800{% endif %}">
+                                                                            
+                                                                            {% if precio_nuestro < competidor.precio %}
+                                                                                <i class="fa-solid fa-circle-check mr-1"></i> Somos más económicos
+                                                                            {% elif precio_nuestro > competidor.precio %}
+                                                                                <i class="fa-solid fa-triangle-exclamation mr-1 "></i> Somos más caros
+                                                                            {% else %}
+                                                                                <i class="fa-solid fa-equals mr-1"></i> Mismo precio
+                                                                            {% endif %}
+                                                                        </p>
 
-                                                                        <a href="{{competidor.url}}" 
-                                                                            target="_blank" 
-                                                                            class="text-blue-600 hover:text-blue-900 inline-flex items-center">
-                                                                            Ver
-                                                                            <i class="fa-solid fa-eye ml-1 w-4 h-4"></i>
-                                                                        </a>  
-
-                                                                        <p class="font-bold text-xs text-green-600">${{ competidor.precio|floatformat:2 }}</p>
-                                                                        <p class="font-bold text-xs text-gray-500 line-through">${{ competidor.precio_tachado|floatformat:2 }}</p>
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            {% endwith %}
                                                         {% empty %}
                                                             <span class="text-xs text-gray-400 italic">Sin datos</span>
                                                         {% endfor %}
@@ -251,7 +265,17 @@
     </div>
 
         <script>
+
+        function activarLoading() {
+            const overlay = document.getElementById('loading-overlay');
+            overlay.classList.remove('hidden');
+        }    
+
+
         function aplicarScraping() {
+            // 1. Mostrar el overlay
+            activarLoading()
+
             const scraping = 'true';
             const marca = document.getElementById('inpMarca').value;
             
@@ -266,6 +290,9 @@
         }
 
         function aplicarFiltros() {
+            // 1. Mostrar el overlay
+            activarLoading()
+
             const marca = document.getElementById('inpMarca').value;
             // Construir URL con parámetros
             const params = new URLSearchParams();
