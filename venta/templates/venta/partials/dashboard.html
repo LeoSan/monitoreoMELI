@@ -5,67 +5,9 @@
             <h1 class="text-3xl font-bold text-gray-900">Dashboard de Ventas</h1>
             <p class="text-gray-600 mt-1">Resumen general de tu negocio</p>
         </div>
-        <div class="flex space-x-3">
-            <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                <i class="fas fa-download mr-2"></i>
-                Exportar
-            </button>
-        </div>
+
     </div>
 
-    <!-- Tarjetas de métricas -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Tarjeta 1: Total Ventas -->
-        <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-600">Total Ventas</p>
-                    <p class="text-3xl font-bold text-gray-900">{{ total_ventas|default:"0" }}</p>
-                    <p class="text-sm text-green-600 mt-1">
-                        <i class="fas fa-arrow-up mr-1"></i>
-                        +12.5% vs mes anterior
-                    </p>
-                </div>
-                <div class="bg-blue-50 p-3 rounded-full">
-                    <i class="fas fa-shopping-cart text-blue-500 text-xl"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tarjeta 2: Productos Activos -->
-        <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-600">Productos Activos</p>
-                    <p class="text-3xl font-bold text-gray-900">{{ productos_activos|default:"0" }}</p>
-                    <p class="text-sm text-blue-600 mt-1">
-                        <i class="fas fa-box mr-1"></i>
-                        En inventario
-                    </p>
-                </div>
-                <div class="bg-green-50 p-3 rounded-full">
-                    <i class="fas fa-box-open text-green-500 text-xl"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tarjeta 3: Ingresos del Mes -->
-        <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-600">Ingresos del Mes</p>
-                    <p class="text-3xl font-bold text-gray-900">${{ ingresos_mes|floatformat:2|default:"0.00" }}</p>
-                    <p class="text-sm text-green-600 mt-1">
-                        <i class="fas fa-arrow-up mr-1"></i>
-                        +8.2% vs mes anterior
-                    </p>
-                </div>
-                <div class="bg-yellow-50 p-3 rounded-full">
-                    <i class="fas fa-dollar-sign text-yellow-500 text-xl"></i>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Sección de contenido principal -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -99,7 +41,7 @@
                             <i class="fas fa-mobile-alt text-white"></i>
                         </div>
                         <div>
-                            <p class="font-medium text-gray-900">Smartphone XYZ</p>
+                            <p class="font-medium text-gray-900">Ejemplios XYZ</p>
                             <p class="text-sm text-gray-500">SKU: SP001</p>
                         </div>
                     </div>
@@ -109,25 +51,7 @@
                     </div>
                 </div>
 
-                <!-- Producto 2 -->
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mr-3">
-                            <i class="fas fa-laptop text-white"></i>
-                        </div>
-                        <div>
-                            <p class="font-medium text-gray-900">Laptop ABC</p>
-                            <p class="text-sm text-gray-500">SKU: LT001</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-semibold text-gray-900">90 unidades</p>
-                        <p class="text-sm text-green-600">+8%</p>
-                    </div>
-                </div>
-
-                <!-- Producto 3 -->
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div class="flex items-center">
                         <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center mr-3">
                             <i class="fas fa-headphones text-white"></i>

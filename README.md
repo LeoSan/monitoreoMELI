@@ -381,3 +381,7 @@ docker compose exec django python manage.py showmigrations
 # Crear Superusuario
 docker compose exec django python manage.py createsuperuser
 docker compose logs -f django
+
+
+
+// SCROLL https://github.com/urian121/scroll-infinito-con-django-htmx-y-mysql 
