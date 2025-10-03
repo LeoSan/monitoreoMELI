@@ -21,13 +21,18 @@ def crear_marcas_iniciales(apps, schema_editor):
         "BIKE101", 
         "AMOSAGDL", 
         "ADIR", 
+        "TECNOLAM", 
+        "TRENDY_KIDS", 
     ]
 
     # 3. Iteramos y creamos cada categoría, evitando duplicados
     for nombre_marcas in nombres_marcas:
+        
+        
         TMarcas.objects.get_or_create(
             nombre=nombre_marcas,
             descripcion="Marca generada automáticamente",
+            activo = True if nombre_marcas == 'NUBE' or nombre_marcas == 'BAZARU' or nombre_marcas == 'KABUDU' else False
         )
 
 
@@ -84,6 +89,10 @@ def crear_un_producto_inicial(apps, schema_editor):
     categoria_bici, created = TCategoria.objects.get_or_create(nombre='Bicicletas')
     categoria_masaje, created = TCategoria.objects.get_or_create(nombre='Camillas y sillas para masajes')
     categoria_carri_compras, created = TCategoria.objects.get_or_create(nombre='Carritos de mandados')
+    categoria_campanas, created = TCategoria.objects.get_or_create(nombre='Campanas, extractores y purificadores de cocina')
+    categoria_carriolas, created = TCategoria.objects.get_or_create(nombre='Carriolas para bebés')
+    categoria_centro_gym_bebe, created = TCategoria.objects.get_or_create(nombre='Centros de actividades y gimnasios para bebés')
+    categoria_colchones, created = TCategoria.objects.get_or_create(nombre='Colchones')
 
     # 2. Lista 
     dummy_productos_modelo = [
@@ -315,7 +324,232 @@ def crear_un_producto_inicial(apps, schema_editor):
             "marca_fk": marca_NUBE,
             "categoria_fk": categoria_carri_compras,  
         }, 
-        
+        ## Campanas, extractores y purificadores de cocina
+        {
+            "nombre": "Campana Extractora 75cm Botones De Pared Nube Plata",
+            "descripcion": "Campana Extractora 75cm Botones De Pared Nube Plata",
+            "sku": "CAMPABOT90CPLA027",
+            "precio_tachado":4999.00,
+            "precio_oferta": 3199.00,
+            "total_stock": 11,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/campana-extractora-75cm-botones-de-pared-nube/up/MLMU718935559?pdp_filters=item_id:MLM3244460252",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_campanas,  
+        },     
+        ## Carriolas para bebés
+        {
+            "nombre": "Carriola De Baston Plegable Para Bebe Carreola Reclinable Color Negro Chasis Negro",
+            "descripcion": "Carriola De Baston Plegable Para Bebe Carreola Reclinable Color Negro Chasis Negro",
+            "sku": "CARR-ACCE-YMBT7P-PANDA NEGRO",
+            "precio_tachado":1420.00,
+            "precio_oferta": 989.00,
+            "total_stock": 29,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/carriola-de-baston-plegable-para-bebe-carreola-reclinable-color-negro-chasis-negro/p/MLM41352955?pdp_filters=item_id:MLM3938643898",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_campanas,  
+        },     
+        {
+            "nombre": "Carriola Baston Plegable Para Bebe Reclinable Con Bolsa Mamá Color Morado Con Bolsa Chasis Negro",
+            "descripcion": "Carriola Baston Plegable Para Bebe Reclinable Con Bolsa Mamá Color Morado Con Bolsa Chasis Negro",
+            "sku": "CARR-ACCE-YMBT7P-UNICORNIO MORADO",
+            "precio_tachado":1420.00,
+            "precio_oferta": 989.00,
+            "total_stock": 42,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/carriola-baston-plegable-para-bebe-reclinable-con-bolsa-mama-color-morado-con-bolsa-chasis-negro/p/MLM53902225?pdp_filters=item_id:MLM3938593264",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_carriolas,  
+        },     
+        {
+            "nombre": "Carriola De Baston Plegable Para Bebe Carreola Reclinable Color Azul Oscuro Chasis Negro",
+            "descripcion": "Carriola De Baston Plegable Para Bebe Carreola Reclinable Color Azul Oscuro Chasis Negro",
+            "sku": "CARR-ACCE-YMBT7P-PANDA AZUL",
+            "precio_tachado":1420.00,
+            "precio_oferta": 989.00,
+            "total_stock": 38,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/carriola-de-baston-plegable-para-bebe-carreola-reclinable-color-azul-oscuro-chasis-negro/p/MLM40672046?pdp_filters=item_id:MLM2417731947",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_carriolas,  
+        },     
+        {
+            "nombre": "Carriola De Baston Plegable Para Bebe Carreola Reclinable Color Gris Chasis Negro",
+            "descripcion": "Carriola De Baston Plegable Para Bebe Carreola Reclinable Color Gris Chasis Negro",
+            "sku": "CARR-ACCE-YMBT7P-PANDA GRIS",
+            "precio_tachado":1420.00,
+            "precio_oferta": 989.00,
+            "total_stock": 62,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/carriola-de-baston-plegable-para-bebe-carreola-reclinable-color-gris-chasis-negro/p/MLM41355001?pdp_filters=item_id:MLM3942825282",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_carriolas,  
+        },
+        ## Centros de actividades y gimnasios para bebés 
+        {
+            "nombre": "Gimnasio Bebé Interactivo Tapete Didáctico Infantil Nube",
+            "descripcion": "Gimnasio Bebé Interactivo Tapete Didáctico Infantil Nube",
+            "sku": "GIMBEBESPACAZU361",
+            "precio_tachado":899.00,
+            "precio_oferta": 439.00,
+            "total_stock": 383,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/carriola-de-baston-plegable-para-bebe-carreola-reclinable-color-azul-oscuro-chasis-negro/p/MLM40672046?pdp_filters=item_id:MLM2417731947",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_centro_gym_bebe,  
+        },             
+        {
+            "nombre": "Gimnasio Bebé Interactivo Tapete Didáctico Infantil Nube",
+            "descripcion": "Gimnasio Bebé Interactivo Tapete Didáctico Infantil Nube",
+            "sku": "GIMBEBUNICOROS363",
+            "precio_tachado":899.00,
+            "precio_oferta": 439.00,
+            "total_stock": 238,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/carriola-de-baston-plegable-para-bebe-carreola-reclinable-color-azul-oscuro-chasis-negro/p/MLM40672046?pdp_filters=item_id:MLM2417731947",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_centro_gym_bebe,  
+        },
+        ## Colchones
+        {
+            "nombre": "Colchon En Caja Matrimonial Memory Foam Con Resorte",
+            "descripcion": "Colchon En Caja Matrimonial Memory Foam Con Resorte",
+            "sku": "COLC-RESO-MR-2451-MAT-CAJA",
+            "precio_tachado":4789.00,
+            "precio_oferta": 1858.10,
+            "total_stock": 360,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/colchon-en-caja-matrimonial-memory-foam-con-resorte/up/MLMU708650365",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_colchones,  
+        },        
+        {
+            "nombre": "Colchón Nube Memory Foam Matrimonial Firme Cooling Gel Tech Blanco",
+            "descripcion": "Colchón Nube Memory Foam Matrimonial Firme Cooling Gel Tech Blanco",
+            "sku": "GIMBEBUNICOROS363",
+            "precio_tachado":4799.00,
+            "precio_oferta": 2048.20,
+            "total_stock": 61,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/colchon-nube-memory-foam-matrimonial-firme-cooling-gel-tech/up/MLMU3162730071",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_colchones,  
+        },        
+        {
+            "nombre": "Colchón Nube Memory Foam Matrimonial Firme Cooling Gel Tech Blanco",
+            "descripcion": "Colchón Nube Memory Foam Matrimonial Firme Cooling Gel Tech Blanco",
+            "sku": "COLC-SM01-135-MAT",
+            "precio_tachado":12000.00,
+            "precio_oferta": 4899.20,
+            "total_stock": 32,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/colchon-nube-memory-foam-matrimonial-firme-cooling-gel-tech/up/MLMU3162730071",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_colchones,  
+        },         
+        {
+            "nombre": "Colchón Individual Nube Premium Memory Foam Anti Movimiento",
+            "descripcion": "Colchón Individual Nube Premium Memory Foam Anti Movimiento",
+            "sku": "COLC-RESO-PSM01-100-INDIVIDUAL",
+            "precio_tachado":12000.00,
+            "precio_oferta": 3009.30,
+            "total_stock": 41,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/colchon-individual-nube-premium-memory-foam-anti-movimiento/up/MLMU3168270490",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_colchones,  
+        },         
+        {
+            "nombre": "Colchón King Size Nube Premium Memory Foam Anti Movimiento",
+            "descripcion": "Colchón King Size Nube Premium Memory Foam Anti Movimiento",
+            "sku": "COLC-RESO-PSM01-200-KING",
+            "precio_tachado":12000.00,
+            "precio_oferta": 4899.30,
+            "total_stock": 71,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/colchon-king-size-nube-premium-memory-foam-anti-movimiento/p/MLM53349971?pdp_filters=item_id:MLM3881655008",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_colchones,  
+        },         
+        {
+            "nombre": "Colchón Matrimonial Nube Premium Memory Foam Anti Movimiento",
+            "descripcion": "Colchón Matrimonial Nube Premium Memory Foam Anti Movimiento",
+            "sku": "COLC-RESO-PSM01-135-MATRIMONIAL",
+            "precio_tachado":12000.00,
+            "precio_oferta": 3919.30,
+            "total_stock": 246,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/colchon-matrimonial-nube-premium-memory-foam-anti-movimiento/p/MLM53364226?pdp_filters=item_id:MLM3883249152",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_colchones,  
+        },         
+        {
+            "nombre": "Colchón Nube Memory Foam Individual Firme Cooling Gel Tech",
+            "descripcion": "Colchón Nube Memory Foam Individual Firme Cooling Gel Tech",
+            "sku": "COLC-SM01-100-INDI",
+            "precio_tachado":12000.00,
+            "precio_oferta": 3240.30,
+            "total_stock": 48,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/colchon-nube-memory-foam-individual-firme-cooling-gel-tech/up/MLMU3168239786",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_colchones,  
+        },         
+        {
+            "nombre": "Colchón Nube Matrimonial Memory Foam Tecno Alemana Premium",
+            "descripcion": "Colchón Nube Matrimonial Memory Foam Tecno Alemana Premium",
+            "sku": "COLC-SMAH01-135-MAT",
+            "precio_tachado":18000.00,
+            "precio_oferta": 4899,
+            "total_stock": 222,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/colchon-nube-matrimonial-memory-foam-tecno-alemana-premium/up/MLMU3188786735",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_colchones,  
+        },         
+        {
+            "nombre": "Colchón Nube Individual Memory Foam Tecno Alemana Premium",
+            "descripcion": "Colchón Nube Individual Memory Foam Tecno Alemana Premium",
+            "sku": "COLC-SMAH01-135-MAT",
+            "precio_tachado":18000.00,
+            "precio_oferta": 2989,
+            "total_stock": 49,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/colchon-nube-individual-memory-foam-tecno-alemana-premium/up/MLMU3188777741",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_colchones,  
+        },         
+        {
+            "nombre": "Colchón Nube King Memory Foam Tecno Alemana Premium",
+            "descripcion": "Colchón Nube King Memory Foam Tecno Alemana Premium",
+            "sku": "COLC-SMAH01-200-KIN",
+            "precio_tachado":18000.00,
+            "precio_oferta": 5899,
+            "total_stock": 116,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/colchon-nube-king-memory-foam-tecno-alemana-premium/up/MLMU3188868557",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_colchones,  
+        },         
+                     
     ]
 
     # 3. Iteramos y creamos 
@@ -339,6 +573,8 @@ def crear_una_competencia_inicial(apps, schema_editor):
     marca_bicicletas_B, created = TMarca.objects.get_or_create(nombre='BIKE101')
     marca_camilla_masajes, created = TMarca.objects.get_or_create(nombre='AMOSAGDL')
     marca_carrito_compras, created = TMarca.objects.get_or_create(nombre='ADIR')
+    marca_campana, created = TMarca.objects.get_or_create(nombre='TECNOLAM')
+    marca_carriola, created = TMarca.objects.get_or_create(nombre='TRENDY_KIDS')
 
 
     # 2. Consultamos Productos ya creado 
@@ -373,7 +609,16 @@ def crear_una_competencia_inicial(apps, schema_editor):
     producto_carri_compra_gris, created = TProductos.objects.get_or_create(sku='CARR-COMP-MOD-CC001-GRIS')
     producto_carri_compra_azul, created = TProductos.objects.get_or_create(sku='CARR-COMP-MOD-CC001-AZUL')
     
+    ## Campanas, extractores y purificadores de cocina
+    producto_campana, created = TProductos.objects.get_or_create(sku='CAMPABOT90CPLA027')
     
+    ## Carriolas para bebés
+    producto_carriola, created = TProductos.objects.get_or_create(sku='CARR-ACCE-YMBT7P-PANDA NEGRO')
+    
+    ## Centros de actividades y gimnasios para bebés
+    producto_gym_bb_azul, created = TProductos.objects.get_or_create(sku='GIMBEBESPACAZU361')    
+    producto_gym_bb_rosa, created = TProductos.objects.get_or_create(sku='GIMBEBUNICOROS363')    
+       
 
     # 3. Creamos las competencias   
     dummy_competencia = [
@@ -521,7 +766,42 @@ def crear_una_competencia_inicial(apps, schema_editor):
             "url": "https://www.mercadolibre.com.mx/carrito-para-mandados-compras-plegable-multiusos-resistente/p/MLM23953221#polycard_client=search_best-seller&tracking_id=e9d07f34-213b-4344-a61e-b8b5c607ba91&wid=MLM2278067932&sid=search",
             "productos_fk": producto_carri_compra_azul,
             "marca_fk": marca_carrito_compras,
-        },         
+        }, 
+        ## Campanas, extractores y purificadores de cocina
+        {
+            "nombre_producto": "Campana De Isla Kutchen Kci90890 90 Cm Cristal Curvon Inox. Color Gris",
+            "precio": 0,
+            "precio_tachado": 0,
+            "url": "https://www.mercadolibre.com.mx/campana-de-isla-kutchen-kci90890-90-cm-cristal-curvon-inox-color-gris/p/MLM49567136?pdp_filters=item_id:MLM2307916297#is_advertising=true&searchVariation=MLM49567136&backend_model=search-backend&position=7&search_layout=stack&type=pad&tracking_id=1fd1985f-52d5-4801-a299-d443ad98e45e&ad_domain=VQCATCORE_LST&ad_position=7&ad_click_id=ODE2NzU3M2EtNmQ3ZS00YmQxLWE3ZDUtYzBjZDAxMTE3OTBk",
+            "productos_fk": producto_campana,
+            "marca_fk": marca_campana,
+        },                
+        ## Campanas, extractores y purificadores de cocina
+        {
+            "nombre_producto": "Carriola Para Bebé De Bastón Trendy Kids Zoo Max Reclinable Color Rosa",
+            "precio": 0,
+            "precio_tachado": 0,
+            "url": "https://www.mercadolibre.com.mx/carriola-para-bebe-de-baston-trendy-kids-zoo-max-reclinable-color-rosa/p/MLM28444322#polycard_client=search_best-seller&tracking_id=357ce74a-88e1-427e-8ccc-5dbbe6c46bae&wid=MLM3871226390&sid=search",
+            "productos_fk": producto_carriola,
+            "marca_fk": marca_carriola,
+        },                
+        ## Centros de actividades y gimnasios para bebés
+        {
+            "nombre_producto": "Gimnasio Para Bebe KIDDOS Tapete Interactivo Didáctico Con 30 Pelotas Incluidas Personajes Marinos Tortuga Para Actividades Ayuda Con Desarrollo Cognitivo Y Sensorial",
+            "precio": 0,
+            "precio_tachado": 0,
+            "url": "https://www.mercadolibre.com.mx/gimnasio-para-bebe-kiddos-tapete-interactivo-didactico-con-30-pelotas-incluidas-personajes-marinos-tortuga-para-actividades-ayuda-con-desarrollo-cognitivo-y-sensorial/p/MLM45798371?has_official_store=false&highlight=true&headerTopBrand=true#polycard_client=search-nordic&search_layout=grid&position=50&type=product&tracking_id=80d7de71-a7a6-4b33-8b21-c2b5ae602e2d&wid=MLM2229237639&sid=search",
+            "productos_fk": producto_gym_bb_azul,
+            "marca_fk": marca_vigorem,
+        },                
+        {
+            "nombre_producto": "Gimnasio Para Bebe KIDDOS Tapete Interactivo Didáctico Con 30 Pelotas Incluidas Personajes Marinos Tortuga Para Actividades Ayuda Con Desarrollo Cognitivo Y Sensorial",
+            "precio": 0,
+            "precio_tachado": 0,
+            "url": "https://www.mercadolibre.com.mx/gimnasio-para-bebe-kiddos-tapete-interactivo-didactico-con-30-pelotas-incluidas-personajes-marinos-tortuga-para-actividades-ayuda-con-desarrollo-cognitivo-y-sensorial/p/MLM45798371?has_official_store=false&highlight=true&headerTopBrand=true#polycard_client=search-nordic&search_layout=grid&position=50&type=product&tracking_id=80d7de71-a7a6-4b33-8b21-c2b5ae602e2d&wid=MLM2229237639&sid=search",
+            "productos_fk": producto_gym_bb_rosa,
+            "marca_fk": marca_vigorem,
+        },                
                
     ]
 
