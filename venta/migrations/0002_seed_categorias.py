@@ -22,7 +22,8 @@ def crear_marcas_iniciales(apps, schema_editor):
         "AMOSAGDL", 
         "ADIR", 
         "TECNOLAM", 
-        "TRENDY_KIDS", 
+        "TRENDY_KIDS",
+        "EASYTAO", 
     ]
 
     # 3. Iteramos y creamos cada categoría, evitando duplicados
@@ -93,6 +94,8 @@ def crear_un_producto_inicial(apps, schema_editor):
     categoria_carriolas, created = TCategoria.objects.get_or_create(nombre='Carriolas para bebés')
     categoria_centro_gym_bebe, created = TCategoria.objects.get_or_create(nombre='Centros de actividades y gimnasios para bebés')
     categoria_colchones, created = TCategoria.objects.get_or_create(nombre='Colchones')
+    categoria_cortinas, created = TCategoria.objects.get_or_create(nombre='Cortinas y persianas manuales para interiores')
+    categoria_cubre_colchon, created = TCategoria.objects.get_or_create(nombre='Cubre colchones')
 
     # 2. Lista 
     dummy_productos_modelo = [
@@ -548,7 +551,231 @@ def crear_un_producto_inicial(apps, schema_editor):
             "url": "https://www.mercadolibre.com.mx/colchon-nube-king-memory-foam-tecno-alemana-premium/up/MLMU3188868557",
             "marca_fk": marca_NUBE,
             "categoria_fk": categoria_colchones,  
-        },         
+        }, 
+        ## Cortinas y persianas manuales para interiores   
+        {
+            "nombre": "Cortina Blackout Premium Quality! 2 Paneles 280x220cm VINO",
+            "descripcion": "Cortina Blackout Premium Quality! 2 Paneles 280x220cm VINO",
+            "sku": "CORT-BLAC-CORB-24-VINO",
+            "precio_tachado":503.99,
+            "precio_oferta": 238,
+            "total_stock": 239,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://articulo.mercadolibre.com.mx/MLM-1459671640-cortina-blackout-premium-quality-2-paneles-280x220cm-_JM",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cortinas,  
+        },              
+        {
+            "nombre": "Cortina Blackout Premium Quality! 2 Paneles 280x220cm BEIGE",
+            "descripcion": "Cortina Blackout Premium Quality! 2 Paneles 280x220cm BEIGE",
+            "sku": "CORT-BLAC-CORB-24-BEIGE",
+            "precio_tachado":503.99,
+            "precio_oferta": 238,
+            "total_stock": 90,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://articulo.mercadolibre.com.mx/MLM-1459671640-cortina-blackout-premium-quality-2-paneles-280x220cm-_JM",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cortinas,  
+        },              
+        {
+            "nombre": "Cortina Blackout Premium Quality! 2 Paneles 280x220cm NEGRO",
+            "descripcion": "Cortina Blackout Premium Quality! 2 Paneles 280x220cm NEGRO",
+            "sku": "CORT-BLAC-CORB-24-NEGRO",
+            "precio_tachado":503.99,
+            "precio_oferta": 238,
+            "total_stock": 135,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://articulo.mercadolibre.com.mx/MLM-1459671640-cortina-blackout-premium-quality-2-paneles-280x220cm-_JM",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cortinas,  
+        },              
+        {
+            "nombre": "Cortina Blackout Premium Quality! 2 Paneles 280x220cm OXFORD",
+            "descripcion": "Cortina Blackout Premium Quality! 2 Paneles 280x220cm OXFORD",
+            "sku": "CORT-BLAC-CORB-24-OXFORD",
+            "precio_tachado":503.99,
+            "precio_oferta": 238,
+            "total_stock": 92,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://articulo.mercadolibre.com.mx/MLM-1459671640-cortina-blackout-premium-quality-2-paneles-280x220cm-_JM",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cortinas,  
+        },              
+        {
+            "nombre": "Cortina Blackout Premium Quality! 2 Paneles 280x220cm CHOCOLATE",
+            "descripcion": "Cortina Blackout Premium Quality! 2 Paneles 280x220cm CHOCOLATE",
+            "sku": "CORT-BLAC-CORB-24-CHOCOLATE",
+            "precio_tachado":503.99,
+            "precio_oferta": 238,
+            "total_stock": 306,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://articulo.mercadolibre.com.mx/MLM-1459671640-cortina-blackout-premium-quality-2-paneles-280x220cm-_JM",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cortinas,  
+        },              
+        {
+            "nombre": "Cortina Blackout Premium Quality! 2 Paneles 280x220cm TAUPE",
+            "descripcion": "Cortina Blackout Premium Quality! 2 Paneles 280x220cm TAUPE",
+            "sku": "CORT-BLAC-CORB-24-TAUPE",
+            "precio_tachado":503.99,
+            "precio_oferta": 238,
+            "total_stock": 612,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://articulo.mercadolibre.com.mx/MLM-1459671640-cortina-blackout-premium-quality-2-paneles-280x220cm-_JM",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cortinas,  
+        },              
+        {
+            "nombre": "Set 2 Cortinas Blackout 280x220cm Lisa Premium Grabada Nube",
+            "descripcion": "Set 2 Cortinas Blackout 280x220cm Lisa Premium Grabada Nube",
+            "sku": "CORTBLACKOUTSHEDRONTULIP",
+            "precio_tachado":429.99,
+            "precio_oferta": 179,
+            "total_stock": 49,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://articulo.mercadolibre.com.mx/MLM-1427382130-set-2-cortinas-blackout-280x220cm-lisa-premium-grabada-nube-_JM",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cortinas,  
+        },              
+        {
+            "nombre": "Set 2 Cortinas Blackout 280x220cm Lisa Premium Grabada Nube",
+            "descripcion": "Set 2 Cortinas Blackout 280x220cm Lisa Premium Grabada Nube",
+            "sku": "CORTBLACKOUTMALVATULIP",
+            "precio_tachado":429.99,
+            "precio_oferta": 179,
+            "total_stock": 368,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://articulo.mercadolibre.com.mx/MLM-1427382130-set-2-cortinas-blackout-280x220cm-lisa-premium-grabada-nube-_JM",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cortinas,  
+        },
+        ## Cubre colchones
+        {
+            "nombre": "Cubrecolchón Suave Cubrecolchon Antiacaros Cloud Sleep Blanco A Prueba De Agua Matrimonial De 137 X 192 X 40cm Modelo Mr-112",
+            "descripcion": "Cubrecolchón Suave Cubrecolchon Antiacaros Cloud Sleep Blanco A Prueba De Agua Matrimonial De 137 X 192 X 40cm Modelo Mr-112",
+            "sku": "CUBR-COLC-MR-112-MAT",
+            "precio_tachado":449,
+            "precio_oferta": 249,
+            "total_stock": 1583,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/cubrecolchon-suave-cubrecolchon-antiacaros-cloud-sleep-blanco-a-prueba-de-agua-matrimonial-de-137-x-192-x-40cm-modelo-mr-112/p/MLM35579769#polycard_client=search_best-seller&tracking_id=d545d6bb-3256-42ba-83bb-322de7ebb12c&wid=MLM3004978178&sid=search",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cubre_colchon,  
+        },                      
+        {
+            "nombre": "Cubrecolchón Suave Cubrecolchon Antiacaros Cloud Sleep Blanco A Prueba De Agua King Size De 202 X 192 X 40cm Modelo Mr-112",
+            "descripcion": "Cubrecolchón Suave Cubrecolchon Antiacaros Cloud Sleep Blanco A Prueba De Agua King Size De 202 X 192 X 40cm Modelo Mr-112",
+            "sku": "CUBR-COLC-MR-112-KZ",
+            "precio_tachado":449,
+            "precio_oferta": 278,
+            "total_stock": 837,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/cubrecolchon-suave-cubrecolchon-antiacaros-cloud-sleep-blanco-a-prueba-de-agua-king-size-de-202-x-192-x-40cm-modelo-mr-112/p/MLM27957074?pdp_filters=item_id:MLM2660824948",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cubre_colchon,  
+        },                      
+        {
+            "nombre": "Protector Cubre Colchón Impermeable Antiacaros Individual Color Blanco 192x102x40 Modelo Mr-112",
+            "descripcion": "Cubrecolchón Suave Cubrecolchon Antiacaros Cloud Sleep Blanco A Prueba De Agua King Size De 202 X 192 X 40cm Modelo Mr-112",
+            "sku": "CUBR-COLC-MR-112-IND",
+            "precio_tachado":549,
+            "precio_oferta": 176,
+            "total_stock": 389,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/protector-cubre-colchon-impermeable-antiacaros-individual-color-blanco-192x102x40-modelo-mr-112/p/MLM53342247?pdp_filters=item_id:MLM3881651006",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cubre_colchon,  
+        },                      
+        {
+            "nombre": "Protector Colchón Hipoalergénico Impermeable Matrimonial Blanco Liso Cubre Cama Funda Colchon Cubrecolchon 137x192x40cm Mod Fsm",
+            "descripcion": "Protector Colchón Hipoalergénico Impermeable Matrimonial Blanco Liso Cubre Cama Funda Colchon Cubrecolchon 137x192x40cm Mod Fsm",
+            "sku": "CUBR-COLC-FSMF01-135-MAT",
+            "precio_tachado":500,
+            "precio_oferta": 189,
+            "total_stock": 568,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/protector-colchon-hipoalergenico-impermeable-matrimonial-blanco-liso-cubre-cama-funda-colchon-cubrecolchon-137x192x40cm-mod-fsm/p/MLM54005750?pdp_filters=item_id:MLM3966971004",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cubre_colchon,  
+        },                      
+        {
+            "nombre": "Protector De Colchón Hipoalergénico Impermeable Individual Blanco Liso Individual Modelo Fsm",
+            "descripcion": "Protector De Colchón Hipoalergénico Impermeable Individual Blanco Liso Individual Modelo Fsm",
+            "sku": "CUBR-COLC-FSMF01-100-IND",
+            "precio_tachado":400,
+            "precio_oferta": 158,
+            "total_stock": 542,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/protector-de-colchon-hipoalergenico-impermeable-individual-blanco-liso-individual-modelo-fsm/p/MLM53341587?pdp_filters=item_id:MLM3881650394",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cubre_colchon,  
+        },                      
+        {
+            "nombre": "Protector De Colchón King Size Hipoalergénico Impermeable Blanco Liso King Modelo Fsm",
+            "descripcion": "Protector De Colchón King Size Hipoalergénico Impermeable Blanco Liso King Modelo Fsm",
+            "sku": "CUBR-COLC-FSMF01-200-KZ",
+            "precio_tachado":600,
+            "precio_oferta": 210,
+            "total_stock": 414,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/protector-de-colchon-hipoalergenico-impermeable-individual-blanco-liso-individual-modelo-fsm/p/MLM53341587?pdp_filters=item_id:MLM3881650394",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cubre_colchon,  
+        },                      
+        {
+            "nombre": "Cubrecolchón Impermeable Toallin A Prueba De Agua Individual Blanco Textura Individual",
+            "descripcion": "Cubrecolchón Impermeable Toallin A Prueba De Agua Individual Blanco Textura Individual",
+            "sku": "CUBR-COLC-FSCT01-100-IND",
+            "precio_tachado":400,
+            "precio_oferta": 169,
+            "total_stock": 188,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/cubrecolchon-impermeable-toallin-a-prueba-de-agua-individual-blanco-textura-individual/p/MLM53602834?pdp_filters=item_id:MLM3903153102",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cubre_colchon,  
+        },                      
+        {
+            "nombre": "Cubrecolchon Impermeable Toallin Matrimonial 1.92mx1.37mx40c Blanco Textura Matrimonial",
+            "descripcion": "Cubrecolchon Impermeable Toallin Matrimonial 1.92mx1.37mx40c Blanco Textura Matrimonial",
+            "sku": "CUBR-COLC-FSCT01-135-MAT",
+            "precio_tachado":500,
+            "precio_oferta": 185,
+            "total_stock": 152,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/cubrecolchon-impermeable-toallin-a-prueba-de-agua-individual-blanco-textura-individual/p/MLM53602834?pdp_filters=item_id:MLM3903153102",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cubre_colchon,  
+        },                      
+        {
+            "nombre": "Cubrecolchon Impermeable Toallin King Size 2.02mx1.92mx40cm",
+            "descripcion": "Cubrecolchon Impermeable Toallin King Size 2.02mx1.92mx40cm",
+            "sku": "CUBR-COLC-FSCT01-200-KZ",
+            "precio_tachado":600,
+            "precio_oferta": 218,
+            "total_stock": 45,
+            "activo": True,
+            "imagen": "http://example.com/imagen.jpg",
+            "url": "https://www.mercadolibre.com.mx/cubrecolchon-impermeable-toallin-a-prueba-de-agua-individual-blanco-textura-individual/p/MLM53602834?pdp_filters=item_id:MLM3903153102",
+            "marca_fk": marca_NUBE,
+            "categoria_fk": categoria_cubre_colchon,  
+        },                      
+                     
                      
     ]
 
@@ -575,6 +802,7 @@ def crear_una_competencia_inicial(apps, schema_editor):
     marca_carrito_compras, created = TMarca.objects.get_or_create(nombre='ADIR')
     marca_campana, created = TMarca.objects.get_or_create(nombre='TECNOLAM')
     marca_carriola, created = TMarca.objects.get_or_create(nombre='TRENDY_KIDS')
+    marca_easytao, created = TMarca.objects.get_or_create(nombre='EASYTAO')
 
 
     # 2. Consultamos Productos ya creado 
@@ -618,8 +846,16 @@ def crear_una_competencia_inicial(apps, schema_editor):
     ## Centros de actividades y gimnasios para bebés
     producto_gym_bb_azul, created = TProductos.objects.get_or_create(sku='GIMBEBESPACAZU361')    
     producto_gym_bb_rosa, created = TProductos.objects.get_or_create(sku='GIMBEBUNICOROS363')    
-       
-
+    
+    
+    ## Cortinas y persianas manuales para interiores  
+    producto_cortina_taupe, created = TProductos.objects.get_or_create(sku='CORT-BLAC-CORB-24-TAUPE')    
+    producto_cortina_chocolate, created = TProductos.objects.get_or_create(sku='CORT-BLAC-CORB-24-CHOCOLATE')    
+    producto_cortina_oxford, created = TProductos.objects.get_or_create(sku='CORT-BLAC-CORB-24-OXFORD')    
+    producto_cortina_negro, created = TProductos.objects.get_or_create(sku='CORT-BLAC-CORB-24-NEGRO')    
+    producto_cortina_beige, created = TProductos.objects.get_or_create(sku='CORT-BLAC-CORB-24-BEIGE')    
+    producto_cortina_vino, created = TProductos.objects.get_or_create(sku='CORT-BLAC-CORB-24-VINO')    
+   
     # 3. Creamos las competencias   
     dummy_competencia = [
         ## ANDADERAS BEBES MUSICALES VIGOREM
@@ -802,6 +1038,56 @@ def crear_una_competencia_inicial(apps, schema_editor):
             "productos_fk": producto_gym_bb_rosa,
             "marca_fk": marca_vigorem,
         },                
+        ## Cortinas y persianas manuales para interiores  
+        {
+            "nombre_producto": "Gimnasio Para Bebe KIDDOS Tapete Interactivo Didáctico Con 30 Pelotas Incluidas Personajes Marinos Tortuga Para Actividades Ayuda Con Desarrollo Cognitivo Y Sensorial",
+            "precio": 0,
+            "precio_tachado": 0,
+            "url": "https://www.mercadolibre.com.mx/cortinas-blackout-nanwei-para-ventanassala-recamara2-paneles-270x215cmaislamiento-termico-y-reduccion-de-ruido-tela-impermeable/p/MLM28013035?pdp_filters=item_id:MLM1998763275#is_advertising=true&searchVariation=MLM28013035&backend_model=search-backend&position=3&search_layout=grid&type=pad&tracking_id=725c8ced-6122-43e3-9b9e-de65d5d0231d&ad_domain=VQCATCORE_LST&ad_position=3&ad_click_id=NDg2ZWY1ZjYtODRkNy00N2NmLWFjMzktMGViOGM1NDk5ZmQ0",
+            "productos_fk": producto_cortina_vino,
+            "marca_fk": marca_easytao,
+        },                
+        {
+            "nombre_producto": "Gimnasio Para Bebe KIDDOS Tapete Interactivo Didáctico Con 30 Pelotas Incluidas Personajes Marinos Tortuga Para Actividades Ayuda Con Desarrollo Cognitivo Y Sensorial",
+            "precio": 0,
+            "precio_tachado": 0,
+            "url": "https://www.mercadolibre.com.mx/cortinas-blackout-nanwei-para-ventanassala-recamara2-paneles-270x215cmaislamiento-termico-y-reduccion-de-ruido-tela-impermeable/p/MLM28013035?pdp_filters=item_id:MLM1998763275#is_advertising=true&searchVariation=MLM28013035&backend_model=search-backend&position=3&search_layout=grid&type=pad&tracking_id=725c8ced-6122-43e3-9b9e-de65d5d0231d&ad_domain=VQCATCORE_LST&ad_position=3&ad_click_id=NDg2ZWY1ZjYtODRkNy00N2NmLWFjMzktMGViOGM1NDk5ZmQ0",
+            "productos_fk": producto_cortina_beige,
+            "marca_fk": marca_easytao,
+        },                
+        {
+            "nombre_producto": "Gimnasio Para Bebe KIDDOS Tapete Interactivo Didáctico Con 30 Pelotas Incluidas Personajes Marinos Tortuga Para Actividades Ayuda Con Desarrollo Cognitivo Y Sensorial",
+            "precio": 0,
+            "precio_tachado": 0,
+            "url": "https://www.mercadolibre.com.mx/cortinas-blackout-nanwei-para-ventanassala-recamara2-paneles-270x215cmaislamiento-termico-y-reduccion-de-ruido-tela-impermeable/p/MLM28013035?pdp_filters=item_id:MLM1998763275#is_advertising=true&searchVariation=MLM28013035&backend_model=search-backend&position=3&search_layout=grid&type=pad&tracking_id=725c8ced-6122-43e3-9b9e-de65d5d0231d&ad_domain=VQCATCORE_LST&ad_position=3&ad_click_id=NDg2ZWY1ZjYtODRkNy00N2NmLWFjMzktMGViOGM1NDk5ZmQ0",
+            "productos_fk": producto_cortina_negro,
+            "marca_fk": marca_easytao,
+        },                
+        {
+            "nombre_producto": "Gimnasio Para Bebe KIDDOS Tapete Interactivo Didáctico Con 30 Pelotas Incluidas Personajes Marinos Tortuga Para Actividades Ayuda Con Desarrollo Cognitivo Y Sensorial",
+            "precio": 0,
+            "precio_tachado": 0,
+            "url": "https://www.mercadolibre.com.mx/cortinas-blackout-nanwei-para-ventanassala-recamara2-paneles-270x215cmaislamiento-termico-y-reduccion-de-ruido-tela-impermeable/p/MLM28013035?pdp_filters=item_id:MLM1998763275#is_advertising=true&searchVariation=MLM28013035&backend_model=search-backend&position=3&search_layout=grid&type=pad&tracking_id=725c8ced-6122-43e3-9b9e-de65d5d0231d&ad_domain=VQCATCORE_LST&ad_position=3&ad_click_id=NDg2ZWY1ZjYtODRkNy00N2NmLWFjMzktMGViOGM1NDk5ZmQ0",
+            "productos_fk": producto_cortina_oxford,
+            "marca_fk": marca_easytao,
+        },                
+        {
+            "nombre_producto": "Gimnasio Para Bebe KIDDOS Tapete Interactivo Didáctico Con 30 Pelotas Incluidas Personajes Marinos Tortuga Para Actividades Ayuda Con Desarrollo Cognitivo Y Sensorial",
+            "precio": 0,
+            "precio_tachado": 0,
+            "url": "https://www.mercadolibre.com.mx/cortinas-blackout-nanwei-para-ventanassala-recamara2-paneles-270x215cmaislamiento-termico-y-reduccion-de-ruido-tela-impermeable/p/MLM28013035?pdp_filters=item_id:MLM1998763275#is_advertising=true&searchVariation=MLM28013035&backend_model=search-backend&position=3&search_layout=grid&type=pad&tracking_id=725c8ced-6122-43e3-9b9e-de65d5d0231d&ad_domain=VQCATCORE_LST&ad_position=3&ad_click_id=NDg2ZWY1ZjYtODRkNy00N2NmLWFjMzktMGViOGM1NDk5ZmQ0",
+            "productos_fk": producto_cortina_chocolate,
+            "marca_fk": marca_easytao,
+        },                
+        {
+            "nombre_producto": "Gimnasio Para Bebe KIDDOS Tapete Interactivo Didáctico Con 30 Pelotas Incluidas Personajes Marinos Tortuga Para Actividades Ayuda Con Desarrollo Cognitivo Y Sensorial",
+            "precio": 0,
+            "precio_tachado": 0,
+            "url": "https://www.mercadolibre.com.mx/cortinas-blackout-nanwei-para-ventanassala-recamara2-paneles-270x215cmaislamiento-termico-y-reduccion-de-ruido-tela-impermeable/p/MLM28013035?pdp_filters=item_id:MLM1998763275#is_advertising=true&searchVariation=MLM28013035&backend_model=search-backend&position=3&search_layout=grid&type=pad&tracking_id=725c8ced-6122-43e3-9b9e-de65d5d0231d&ad_domain=VQCATCORE_LST&ad_position=3&ad_click_id=NDg2ZWY1ZjYtODRkNy00N2NmLWFjMzktMGViOGM1NDk5ZmQ0",
+            "productos_fk": producto_cortina_taupe,
+            "marca_fk": marca_easytao,
+        },                
+               
                
     ]
 
