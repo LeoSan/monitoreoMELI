@@ -353,7 +353,7 @@ def crear_un_producto_inicial(apps, schema_editor):
             "imagen": "http://example.com/imagen.jpg",
             "url": "https://www.mercadolibre.com.mx/carriola-de-baston-plegable-para-bebe-carreola-reclinable-color-negro-chasis-negro/p/MLM41352955?pdp_filters=item_id:MLM3938643898",
             "marca_fk": marca_NUBE,
-            "categoria_fk": categoria_campanas,  
+            "categoria_fk": categoria_carriolas,  
         },     
         {
             "nombre": "Carriola Baston Plegable Para Bebe Reclinable Con Bolsa Mamá Color Morado Con Bolsa Chasis Negro",
@@ -432,19 +432,6 @@ def crear_un_producto_inicial(apps, schema_editor):
             "activo": True,
             "imagen": "http://example.com/imagen.jpg",
             "url": "https://www.mercadolibre.com.mx/colchon-en-caja-matrimonial-memory-foam-con-resorte/up/MLMU708650365",
-            "marca_fk": marca_NUBE,
-            "categoria_fk": categoria_colchones,  
-        },        
-        {
-            "nombre": "Colchón Nube Memory Foam Matrimonial Firme Cooling Gel Tech Blanco",
-            "descripcion": "Colchón Nube Memory Foam Matrimonial Firme Cooling Gel Tech Blanco",
-            "sku": "GIMBEBUNICOROS363",
-            "precio_tachado":4799.00,
-            "precio_oferta": 2048.20,
-            "total_stock": 61,
-            "activo": True,
-            "imagen": "http://example.com/imagen.jpg",
-            "url": "https://www.mercadolibre.com.mx/colchon-nube-memory-foam-matrimonial-firme-cooling-gel-tech/up/MLMU3162730071",
             "marca_fk": marca_NUBE,
             "categoria_fk": categoria_colchones,  
         },        
@@ -1040,7 +1027,7 @@ def crear_una_competencia_inicial(apps, schema_editor):
         },                
         ## Cortinas y persianas manuales para interiores  
         {
-            "nombre_producto": "Gimnasio Para Bebe KIDDOS Tapete Interactivo Didáctico Con 30 Pelotas Incluidas Personajes Marinos Tortuga Para Actividades Ayuda Con Desarrollo Cognitivo Y Sensorial",
+            "nombre_producto": "Cortinas Blackout Nanwei para ventanas,sala recamara,2 Paneles 270X215cm,aislamiento Térmico Y Reducción De Ruido Tela Impermeable",
             "precio": 0,
             "precio_tachado": 0,
             "url": "https://www.mercadolibre.com.mx/cortinas-blackout-nanwei-para-ventanassala-recamara2-paneles-270x215cmaislamiento-termico-y-reduccion-de-ruido-tela-impermeable/p/MLM28013035?pdp_filters=item_id:MLM1998763275#is_advertising=true&searchVariation=MLM28013035&backend_model=search-backend&position=3&search_layout=grid&type=pad&tracking_id=725c8ced-6122-43e3-9b9e-de65d5d0231d&ad_domain=VQCATCORE_LST&ad_position=3&ad_click_id=NDg2ZWY1ZjYtODRkNy00N2NmLWFjMzktMGViOGM1NDk5ZmQ0",
@@ -1048,7 +1035,7 @@ def crear_una_competencia_inicial(apps, schema_editor):
             "marca_fk": marca_easytao,
         },                
         {
-            "nombre_producto": "Gimnasio Para Bebe KIDDOS Tapete Interactivo Didáctico Con 30 Pelotas Incluidas Personajes Marinos Tortuga Para Actividades Ayuda Con Desarrollo Cognitivo Y Sensorial",
+            "nombre_producto": "Cortinas Blackout Nanwei para ventanas,sala recamara,2 Paneles 270X215cm,aislamiento Térmico Y Reducción De Ruido Tela Impermeable",
             "precio": 0,
             "precio_tachado": 0,
             "url": "https://www.mercadolibre.com.mx/cortinas-blackout-nanwei-para-ventanassala-recamara2-paneles-270x215cmaislamiento-termico-y-reduccion-de-ruido-tela-impermeable/p/MLM28013035?pdp_filters=item_id:MLM1998763275#is_advertising=true&searchVariation=MLM28013035&backend_model=search-backend&position=3&search_layout=grid&type=pad&tracking_id=725c8ced-6122-43e3-9b9e-de65d5d0231d&ad_domain=VQCATCORE_LST&ad_position=3&ad_click_id=NDg2ZWY1ZjYtODRkNy00N2NmLWFjMzktMGViOGM1NDk5ZmQ0",
@@ -1056,7 +1043,7 @@ def crear_una_competencia_inicial(apps, schema_editor):
             "marca_fk": marca_easytao,
         },                
         {
-            "nombre_producto": "Gimnasio Para Bebe KIDDOS Tapete Interactivo Didáctico Con 30 Pelotas Incluidas Personajes Marinos Tortuga Para Actividades Ayuda Con Desarrollo Cognitivo Y Sensorial",
+            "nombre_producto": "Cortinas Blackout Nanwei para ventanas,sala recamara,2 Paneles 270X215cm,aislamiento Térmico Y Reducción De Ruido Tela Impermeable",
             "precio": 0,
             "precio_tachado": 0,
             "url": "https://www.mercadolibre.com.mx/cortinas-blackout-nanwei-para-ventanassala-recamara2-paneles-270x215cmaislamiento-termico-y-reduccion-de-ruido-tela-impermeable/p/MLM28013035?pdp_filters=item_id:MLM1998763275#is_advertising=true&searchVariation=MLM28013035&backend_model=search-backend&position=3&search_layout=grid&type=pad&tracking_id=725c8ced-6122-43e3-9b9e-de65d5d0231d&ad_domain=VQCATCORE_LST&ad_position=3&ad_click_id=NDg2ZWY1ZjYtODRkNy00N2NmLWFjMzktMGViOGM1NDk5ZmQ0",
@@ -1064,7 +1051,7 @@ def crear_una_competencia_inicial(apps, schema_editor):
             "marca_fk": marca_easytao,
         },                
         {
-            "nombre_producto": "Gimnasio Para Bebe KIDDOS Tapete Interactivo Didáctico Con 30 Pelotas Incluidas Personajes Marinos Tortuga Para Actividades Ayuda Con Desarrollo Cognitivo Y Sensorial",
+            "nombre_producto": "Cortinas Blackout Nanwei para ventanas,sala recamara,2 Paneles 270X215cm,aislamiento Térmico Y Reducción De Ruido Tela Impermeable",
             "precio": 0,
             "precio_tachado": 0,
             "url": "https://www.mercadolibre.com.mx/cortinas-blackout-nanwei-para-ventanassala-recamara2-paneles-270x215cmaislamiento-termico-y-reduccion-de-ruido-tela-impermeable/p/MLM28013035?pdp_filters=item_id:MLM1998763275#is_advertising=true&searchVariation=MLM28013035&backend_model=search-backend&position=3&search_layout=grid&type=pad&tracking_id=725c8ced-6122-43e3-9b9e-de65d5d0231d&ad_domain=VQCATCORE_LST&ad_position=3&ad_click_id=NDg2ZWY1ZjYtODRkNy00N2NmLWFjMzktMGViOGM1NDk5ZmQ0",
@@ -1072,7 +1059,7 @@ def crear_una_competencia_inicial(apps, schema_editor):
             "marca_fk": marca_easytao,
         },                
         {
-            "nombre_producto": "Gimnasio Para Bebe KIDDOS Tapete Interactivo Didáctico Con 30 Pelotas Incluidas Personajes Marinos Tortuga Para Actividades Ayuda Con Desarrollo Cognitivo Y Sensorial",
+            "nombre_producto": "Cortinas Blackout Nanwei para ventanas,sala recamara,2 Paneles 270X215cm,aislamiento Térmico Y Reducción De Ruido Tela Impermeable",
             "precio": 0,
             "precio_tachado": 0,
             "url": "https://www.mercadolibre.com.mx/cortinas-blackout-nanwei-para-ventanassala-recamara2-paneles-270x215cmaislamiento-termico-y-reduccion-de-ruido-tela-impermeable/p/MLM28013035?pdp_filters=item_id:MLM1998763275#is_advertising=true&searchVariation=MLM28013035&backend_model=search-backend&position=3&search_layout=grid&type=pad&tracking_id=725c8ced-6122-43e3-9b9e-de65d5d0231d&ad_domain=VQCATCORE_LST&ad_position=3&ad_click_id=NDg2ZWY1ZjYtODRkNy00N2NmLWFjMzktMGViOGM1NDk5ZmQ0",
@@ -1080,7 +1067,7 @@ def crear_una_competencia_inicial(apps, schema_editor):
             "marca_fk": marca_easytao,
         },                
         {
-            "nombre_producto": "Gimnasio Para Bebe KIDDOS Tapete Interactivo Didáctico Con 30 Pelotas Incluidas Personajes Marinos Tortuga Para Actividades Ayuda Con Desarrollo Cognitivo Y Sensorial",
+            "nombre_producto": "Cortinas Blackout Nanwei para ventanas,sala recamara,2 Paneles 270X215cm,aislamiento Térmico Y Reducción De Ruido Tela Impermeable",
             "precio": 0,
             "precio_tachado": 0,
             "url": "https://www.mercadolibre.com.mx/cortinas-blackout-nanwei-para-ventanassala-recamara2-paneles-270x215cmaislamiento-termico-y-reduccion-de-ruido-tela-impermeable/p/MLM28013035?pdp_filters=item_id:MLM1998763275#is_advertising=true&searchVariation=MLM28013035&backend_model=search-backend&position=3&search_layout=grid&type=pad&tracking_id=725c8ced-6122-43e3-9b9e-de65d5d0231d&ad_domain=VQCATCORE_LST&ad_position=3&ad_click_id=NDg2ZWY1ZjYtODRkNy00N2NmLWFjMzktMGViOGM1NDk5ZmQ0",

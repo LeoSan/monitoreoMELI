@@ -91,6 +91,7 @@ def leer_csv_ventas(ruta_archivo, mapeo_columnas=None):
         logger.error(f"Error al leer el archivo CSV: {str(e)}")
         raise
 
+
 def parsear_fecha_venta(fecha_str):
     """
     Convierte fecha del formato '27 de agosto de 2025 23:56 hs.' a datetime
@@ -138,6 +139,7 @@ def parsear_fecha_venta(fecha_str):
     except Exception as e:
         logger.error(f"Error parseando fecha '{fecha_str}': {str(e)}")
         return None
+
 
 def validar_datos_ventas(df, columnas_mapeadas):
     """
@@ -233,6 +235,7 @@ def validar_datos_ventas(df, columnas_mapeadas):
         
     return df_filtrado, errores
 
+
 def cargar_ventas_bd(df_validado, mostrar_progreso=True):
     """
     Paso 3: Carga los datos validados a la base de datos
@@ -314,6 +317,7 @@ def cargar_ventas_bd(df_validado, mostrar_progreso=True):
     
     return resultado
 
+
 def procesar_csv_ventas_completo(ruta_archivo, mapeo_columnas=None, mostrar_progreso=True):
     """
     Función principal que ejecuta todo el proceso: leer, validar y cargar
@@ -360,6 +364,7 @@ def procesar_csv_ventas_completo(ruta_archivo, mapeo_columnas=None, mostrar_prog
         logger.error(f"Error general en procesamiento: {str(e)}")
         raise
 
+
 def iniciar_driver():
     """Inicializa y configura el driver de Selenium."""
     logger.info("Inicializando el WebDriver de Chrome...")
@@ -382,8 +387,9 @@ def iniciar_driver():
     except Exception as e:
         logger.error(f"Error al inicializar el driver: {e}")
         return None
-    
-def generarScrapingPorProducto(url:str):
+
+
+def generar_scraping_por_producto(url:str):
     """
     Función de validación para confirmar que el elemento es encontrado.
     """
@@ -468,13 +474,14 @@ def generarScrapingPorProducto(url:str):
 
     return resultado_final
 
-def updatePrecioCompetencia(producto_filtro):
+
+def update_precio_competencia(producto_filtro):
     # Lista de Competencias 
     competencia_para_scrapear = TProductoCompetencias.objects.obtener_por_producto(producto_filtro)
     
     for comp in competencia_para_scrapear:
         # Obtenemos el nuevo precio desde el scraping
-        list_competencia_scraping = generarScrapingPorProducto(comp['url'])
+        list_competencia_scraping = generar_scraping_por_producto(comp['url'])
         # Actualizamos el registro en la base de datos
         TProductoCompetencias.objects.filter(id=comp['id']).update(precio=list_competencia_scraping['precio'], precio_tachado=list_competencia_scraping['precio_original'])
         if list_competencia_scraping['error'] != None:

@@ -160,6 +160,8 @@
                                                                 <div class="p-4 rounded-lg border 
                                                                             {% if precio_nuestro < competidor.precio %}
                                                                                 bg-green-50 border-green-200  {# SUCCESS: Clases si somos más baratos #}
+                                                                            {% elif competidor.precio == competidor.precio_tachado %}
+                                                                                bg-red-50 border-red-200      {# WARNING: Enlace ya no funciona #}
                                                                             {% elif precio_nuestro > competidor.precio %}
                                                                                 bg-red-50 border-red-200      {# WARNING: Clases si somos más caros #}
                                                                             {% else %}
@@ -192,15 +194,18 @@
                                                                         </div>
                                                                         <p class="mt-2 text-xs font-semibold 
                                                                             {% if precio_nuestro < competidor.precio %}text-green-800
+                                                                            {% elif competidor.precio_tachado == competidor.precio %}text-red-800
                                                                             {% elif precio_nuestro > competidor.precio %}text-red-800
                                                                             {% else %}text-yellow-800{% endif %}">
                                                                             
                                                                             {% if precio_nuestro < competidor.precio %}
                                                                                 <i class="fa-solid fa-circle-check mr-1"></i> Somos más económicos
+                                                                            {% elif competidor.precio_tachado == competidor.precio %}
+                                                                                <i class="fa-solid fa-triangle-exclamation mr-1 "></i> Validar enlace de la competencia
                                                                             {% elif precio_nuestro > competidor.precio %}
-                                                                                <i class="fa-solid fa-triangle-exclamation mr-1 "></i> Somos más caros
+                                                                                <i class="fa-solid fa-triangle-exclamation mr-1 "></i> Mejorar esta Oferta
                                                                             {% else %}
-                                                                                <i class="fa-solid fa-equals mr-1"></i> Mismo precio
+                                                                                <i class="fa-solid fa-equals mr-1"></i> Mejorar esta Oferta
                                                                             {% endif %}
                                                                         </p>
 

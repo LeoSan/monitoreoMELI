@@ -8,7 +8,7 @@ urlpatterns = [
     path('upload/', views.subir_ventas, name='subir_ventas'),
     path('upload-csv/', views.cargar_csv_ventas, name='cargar_csv_ventas'),
     path('mapa-calor/', views.mapa_calor, name='mapa_calor'),
-    path('check-producto/', views.obtenerAnalisisProducto, name='check_producto'),
-    path('check-list-competencia/', views.obtenerListadoAnalisisProductoCompetencia, name='check_list_producto_competencia'),
-    path('cloud-word/', views.generarCloudWord, name='cloud_word'),
+    path('check-producto/', views.obtener_analisis_producto, name='check_producto'),
+    path('check-list-competencia/', views.obtener_listado_analisis_productoCompetencia, name='check_list_producto_competencia'),
+    path('cloud-word/', views.generar_cloud_word, name='cloud_word'),
 ]

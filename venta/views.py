@@ -15,7 +15,7 @@ from venta.models import TVentas, TProductos, TMarcas, TCategorias
 
 # Propios 
 from .forms import CSVUploadForm
-from .utils import procesar_csv_ventas_completo, updatePrecioCompetencia
+from .utils import procesar_csv_ventas_completo, update_precio_competencia
 from dotenv import load_dotenv
 
 # Configuraciones
@@ -241,7 +241,7 @@ def mapa_calor(request):
     return render(request, 'venta/mapa_calor.html', context)
 
 @login_required
-def obtenerAnalisisProducto(request):
+def obtener_analisis_producto(request):
     try:
         boton_scraping   = request.GET.get('scraping')
         marca_filtro     = request.GET.get('marca')
@@ -269,7 +269,7 @@ def obtenerAnalisisProducto(request):
 
         if boton_scraping == 'true' or val_filtro_producto is not None:
             logger.info(f"Ejecutando scraping para el producto ID: {producto_filtro}")
-            competencia = updatePrecioCompetencia(producto_filtro)            
+            competencia = update_precio_competencia(producto_filtro)            
             if type(competencia['error']) is not 'NoneType':
                 messages.success(request, os.getenv('MSJ_SUCCESS'))
             else:
@@ -288,7 +288,7 @@ def obtenerAnalisisProducto(request):
     return render(request, 'venta/check_producto.html', context)
 
 @login_required
-def obtenerListadoAnalisisProductoCompetencia(request):
+def obtener_listado_analisis_productoCompetencia(request):
     try:
         boton_scraping   = request.GET.get('scraping')
         marca_filtro = request.GET.get('marca')
@@ -310,7 +310,7 @@ def obtenerListadoAnalisisProductoCompetencia(request):
         if boton_scraping == 'true':
             for productos in productos_optimizados:
                 logger.info(f"Ejecutando scraping para el producto ID: {productos.id}")
-                competencia = updatePrecioCompetencia(productos.id)            
+                competencia = update_precio_competencia(productos.id)            
                 if type(competencia['error']) is not 'NoneType':
                     messages.success(request, os.getenv('MSJ_SUCCESS'))
                 else:
@@ -329,5 +329,5 @@ def obtenerListadoAnalisisProductoCompetencia(request):
     return render(request, 'venta/check_producto_competencia.html', context)
 
 @login_required
-def generarCloudWord(request):
+def generar_cloud_word(request):
     return render(request, 'venta/cloud_word.html') 
