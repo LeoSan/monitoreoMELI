@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import TVentas, TProductos, TProductoCompetencias, TMarcas, TCategorias
+from .models import TVentas, TProductos, TProductoCompetencias, TMarcas, TCategorias, TPublicacionesProductos
 
 
 @admin.register(TVentas)
@@ -44,3 +44,10 @@ class TProductoCompetenciaAdmin(admin.ModelAdmin):
     # inlines = [
     #     TProductosInlineAdmin
     # ]  ## Esto permite hacer el macth con los productos     
+    
+    
+@admin.register(TPublicacionesProductos)
+class TPublicacionesProductosAdmin(admin.ModelAdmin):
+    list_display  = ['id', 'codigo_mlm']
+    list_filter   = ['marca_fk', 'descripcion']
+    search_fields = ['-descripcion']    

@@ -3,8 +3,6 @@ import os
 from datetime import datetime
 import logging
 import re
-import os
-
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -13,12 +11,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.common.exceptions import TimeoutException # Importar la excepción de Timeout
+
 
 from dotenv import load_dotenv
 
 from .models import TVentas, TProductoCompetencias
 
-# Configurar logging
+# Configuracions
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -89,6 +89,7 @@ def leer_csv_ventas(ruta_archivo, mapeo_columnas=None):
         logger.error(f"Error al leer el archivo CSV: {str(e)}")
         raise
 
+
 def parsear_fecha_venta(fecha_str):
     """
     Convierte fecha del formato '27 de agosto de 2025 23:56 hs.' a datetime
@@ -136,6 +137,7 @@ def parsear_fecha_venta(fecha_str):
     except Exception as e:
         logger.error(f"Error parseando fecha '{fecha_str}': {str(e)}")
         return None
+
 
 def validar_datos_ventas(df, columnas_mapeadas):
     """
@@ -231,6 +233,7 @@ def validar_datos_ventas(df, columnas_mapeadas):
         
     return df_filtrado, errores
 
+
 def cargar_ventas_bd(df_validado, mostrar_progreso=True):
     """
     Paso 3: Carga los datos validados a la base de datos
@@ -312,6 +315,7 @@ def cargar_ventas_bd(df_validado, mostrar_progreso=True):
     
     return resultado
 
+
 def procesar_csv_ventas_completo(ruta_archivo, mapeo_columnas=None, mostrar_progreso=True):
     """
     Función principal que ejecuta todo el proceso: leer, validar y cargar
@@ -358,93 +362,130 @@ def procesar_csv_ventas_completo(ruta_archivo, mapeo_columnas=None, mostrar_prog
         logger.error(f"Error general en procesamiento: {str(e)}")
         raise
 
+
 def iniciar_driver():
     """Inicializa y configura el driver de Selenium."""
+    logger.info("Inicializando el WebDriver de Chrome...")
     opts = Options()
+    # Todas tus opciones están perfectas, no las cambies
     opts.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.7258.115 Safari/537.36")
-    opts.add_argument("--disable-search-engine-choice-screen")
     opts.add_argument("--headless")
     opts.add_argument("--no-sandbox")
     opts.add_argument("--disable-gpu")
     opts.add_argument("--disable-dev-shm-usage")
-    service = Service(os.getenv('DRIVER_PATH'))
-    return webdriver.Chrome(service=service, options=opts)
-    
-def generarScrapingPorProducto(url:str):
+    opts.add_argument("--window-size=1920,1080")
+
+    # --- CAMBIO PRINCIPAL ---
+    # Ya no usamos ChromeDriverManager. Selenium encontrará automáticamente
+    # el chromedriver que instalamos con "apk" en el Dockerfile.
+    try:
+        driver = webdriver.Chrome(options=opts)
+        logger.info("WebDriver inicializado correctamente.")
+        return driver
+    except Exception as e:
+        logger.error(f"Error al inicializar el driver: {e}")
+        return None
+
+
+def generar_scraping_por_producto(url:str):
     """
-    Realiza el scraping de un producto usando un driver ya inicializado.
-    
-    Args:
-        driver (WebDriver): Instancia de Selenium WebDriver.
-        producto_id (int): PK del producto en TProductos.
-        
-    Returns:
-        dict: Resultado completo del proceso.
+    Función de validación para confirmar que el elemento es encontrado.
     """
-    precio_meta = 0
+    precio_final = 0.0
+    precio_original = 0.0
+    driver = None
     
     try:
-        logger.info(f"=== INICIANDO SCRAPING DE {url} ===")
         driver = iniciar_driver()
-        # Simular una URL de producto para el ejemplo
-        #url = "https://www.mercadolibre.com.mx/bicicleta-de-equilibrio-sin-pedales-llantas-de-aire-infantil-color-rojo/p/MLM45602311#polycard_client=search_best-seller&tracking_id=382d3386-c3ba-4f69-a37c-4193915f0724&wid=MLM3539214790&sid=search"
-        driver.get(url)
-        
-        # Usar WebDriverWait para esperar de forma inteligente el elemento
-        # Se espera 10 segundos como máximo a que el elemento sea visible
-        wait = WebDriverWait(driver, 10)
-        
-        # ---- CAMBIO PRINCIPAL: Se usa el selector XPath ----
-        precio_element = wait.until(
-            EC.visibility_of_element_located((
-                By.XPATH, 
-                '//span[@itemprop="price"]'
-            ))
-        )
+        if not driver:
+            raise Exception("El WebDriver no se pudo inicializar.")
 
-        # Solo procedemos si el elemento web fue encontrado
-        if precio_element:
-            precio_str = precio_element.get_attribute('content')
-            try:
-                precio_num = float(precio_str)
-                if precio_num > 0:
-                    precio_meta = precio_num
-                    
-            except (ValueError, TypeError):
-                pass
+        driver.get(url)
+        wait = WebDriverWait(driver, 15)
         
+       # ---> Bloque para extraer el PRECIO oferta
+        try:
+            #logger.info("Buscando el elemento <meta> con itemprop='price'...")
+            precio_element = wait.until(
+                EC.presence_of_element_located((
+                    By.XPATH, 
+                    '//meta[@itemprop="price"]'
+                ))
+            )
+            
+            # Si el código llega aquí, ¡el elemento fue encontrado!
+            logger.info("¡ÉXITO! El elemento fue encontrado.")
+            
+            # Ahora vamos a inspeccionar lo que encontramos para validarlo
+            tag_name = precio_element.tag_name
+            content_value = precio_element.get_attribute('content')
+            
+           # logger.info(f"   -> Tipo de etiqueta: {tag_name}")
+           # logger.info(f"   -> Valor del atributo 'content': {content_value}")
+            
+            # Intentamos la conversión para ver si el valor es numérico
+            precio_final = float(content_value)
+            #logger.info(f"   -> Conversión a número exitosa: {precio_final}")
+
+        except TimeoutException:
+            # Si después de 15 segundos no lo encuentra, el código entrará aquí
+            logger.error("VALIDACIÓN FALLIDA: El elemento con XPath '//meta[@itemprop=\"price\"]' NO FUE ENCONTRADO en la página.")
+        
+        # ---> Bloque para extraer el PRECIO ORIGINAL
+        try:
+            logger.info("Buscando el precio original (tachado)...")
+            precio_original_element = wait.until(
+                EC.presence_of_element_located((
+                    By.XPATH,
+                    # Usamos el XPath específico que construimos
+                    "//s[contains(@class, 'ui-pdp-price__original-value')]//span[@class='andes-money-amount__fraction']"
+                ))
+            )
+            # Obtenemos el texto del elemento y lo convertimos a número
+            precio_original_texto = precio_original_element.text
+            precio_original = float(precio_original_texto.replace(',', '')) # Se añade replace por si hay miles
+            #logger.info(f"ÉXITO: Precio original encontrado: {precio_original}")
+
+        except TimeoutException:
+            # Esto es normal si el producto no tiene descuento. No es un error crítico.
+            logger.warning("AVISO: No se encontró un precio original. Es posible que el producto no tenga descuento.")
+            precio_original = 0.0 # O puedes asignarle el mismo valor que precio_final
+
+        # ---> Añadimos el nuevo dato al resultado        
         resultado_final = {
-            'precio': precio_meta,
+            'precio': precio_final,
+            'precio_original': precio_original,
             'error': None
         }
-        driver.quit()
-        #logger.info("=== SCRAPING COMPLETADO ===")
-        
-        return resultado_final
-        
-    except Exception as e:
-        #logger.error(f"Error al procesar el producto : {str(e)}")
-        resultado_final = {
-            'precio': precio_meta,
-            #'error': str(e)
-            'error': 'Falla Scraping'
-        }
-        return resultado_final
 
-def updatePrecioCompetencia(producto_filtro):
-    # Usamos nuestro nuevo método para obtener la lista inicial
+    except Exception as e:
+        logger.error(f"Error durante el proceso de validación: {str(e)}")
+        resultado_final = {
+            'precio': precio_final,
+            'precio_original': precio_original,
+            'error': str(e)
+        }
+    finally:
+        if driver:
+            driver.quit()
+            logger.info("=== VALIDACIÓN COMPLETADA (DRIVER CERRADO) ===")
+
+    return resultado_final
+
+
+def update_precio_competencia(producto_filtro):
+    # Lista de Competencias 
     competencia_para_scrapear = TProductoCompetencias.objects.obtener_por_producto(producto_filtro)
     
     for comp in competencia_para_scrapear:
         # Obtenemos el nuevo precio desde el scraping
-        list_competencia_scraping = generarScrapingPorProducto(comp['url'])
-        nuevo_precio = list_competencia_scraping['precio']
-
+        list_competencia_scraping = generar_scraping_por_producto(comp['url'])
         # Actualizamos el registro en la base de datos
-        TProductoCompetencias.objects.filter(id=comp['id']).update(precio=nuevo_precio)
+        TProductoCompetencias.objects.filter(id=comp['id']).update(precio=list_competencia_scraping['precio'], precio_tachado=list_competencia_scraping['precio_original'])
+        if list_competencia_scraping['error'] != None:
+            logger.error(f"Error En el ScrapinG {comp['id']}: {list_competencia_scraping['error']}")
             
     # Volvemos a llamar a nuestro método para obtener los datos ya actualizados
     competencia_actualizada = TProductoCompetencias.objects.obtener_por_producto(producto_filtro)
-    
-    #logger.info(f"Scraping y actualización total: {len(competencia_actualizada)}")
-    return competencia_actualizada
+    resultado =  {'lista':competencia_actualizada,'error': list_competencia_scraping['error']}
+    return resultado

@@ -88,15 +88,19 @@ class TCategorias(models.Model):
         return f"{self.nombre} - {self.activo}"        
 
 class TProductos(models.Model):
-    id          = models.BigAutoField(primary_key=True)
-    nombre      = models.CharField(max_length=255)
-    descripcion = models.TextField(null=True, blank=True)
-    sku         = models.CharField(max_length=255,null=True, blank=True)
-    precio_techo= models.FloatField(null=True, blank=True)
-    total_stock = models.BigIntegerField(null=True, blank=True)
-    activo      = models.BooleanField(default=True)
-    marca_fk    = models.ForeignKey(TMarcas, on_delete=models.CASCADE)## Cardinalidad  M .1
-    categoria_fk    = models.ForeignKey(TCategorias, on_delete=models.CASCADE)## Cardinalidad  M .1
+    id            = models.BigAutoField(primary_key=True)
+    nombre        = models.CharField(max_length=255)
+    descripcion   = models.TextField(null=True, blank=True)
+    sku           = models.CharField(max_length=255,null=True, blank=True)
+    precio_tachado= models.FloatField(null=True, blank=True)
+    precio_oferta = models.FloatField(null=True, blank=True)
+    total_stock   = models.BigIntegerField(null=True, blank=True)
+    activo        = models.BooleanField(default=True)
+    imagen        = models.TextField(null=True, blank=True)
+    url           = models.TextField(null=True, blank=True)
+    marca_fk      = models.ForeignKey(TMarcas, on_delete=models.CASCADE)## Cardinalidad  M .1
+    categoria_fk  = models.ForeignKey(TCategorias, on_delete=models.CASCADE)## Cardinalidad  M .1
+    
     class Meta:
         db_table = 't_productos'  # Especifica el nombre exacto de la tabla
         verbose_name = 'Producto'
@@ -113,19 +117,28 @@ class ProductoCompetenciaManager(models.Manager):
         return self.get_queryset().filter(
             productos_fk_id=producto_id
         ).values(
-            'id', 'nombre_producto', 'precio', 'url', 'marca_fk__nombre'
+            'id', 'nombre_producto', 'precio', 'url', 'marca_fk__nombre', 'precio_tachado'
         ).distinct().order_by('nombre_producto')    
+
     
 class TProductoCompetencias(models.Model):
     id              = models.BigAutoField(primary_key=True)
     nombre_producto = models.CharField(max_length=255)
     precio          = models.FloatField(null=True, blank=True)
+    precio_tachado  = models.FloatField(null=True, blank=True)
     url             = models.TextField(null=True, blank=True)
     productos_fk    = models.ForeignKey(TProductos, on_delete=models.CASCADE)## Cardinalidad  M .1
     marca_fk        = models.ForeignKey(TMarcas, on_delete=models.CASCADE)## Cardinalidad  M .1 
     
     # Clase Abtracta para manejar consultas comunes
     objects = ProductoCompetenciaManager()    
+    
+    # Añadimos related_name para una mejor legibilidad en las consultas
+    productos_fk = models.ForeignKey(
+        TProductos, 
+        on_delete=models.CASCADE,
+        related_name='competidores'  # <-- ¡ESTA ES LA MEJORA!
+    )   
     
     class Meta:
         db_table = 't_productos_competencia'  # Especifica el nombre exacto de la tabla
@@ -135,21 +148,21 @@ class TProductoCompetencias(models.Model):
     def __str__(self):
         return f"{self.nombre_producto} - {self.marca_fk}"
     
-    class TPublicacionesProductos(models.Model):
-        id          = models.BigAutoField(primary_key=True)
-        codigo_mlm  = models.CharField(max_length=255)
-        descripcion = models.TextField(null=True, blank=True)
-        activo      = models.BooleanField(default=True)
-        marca_fk    = models.ForeignKey(TMarcas, on_delete=models.CASCADE)## Cardinalidad  M .1
-        categoria_fk = models.ForeignKey(TCategorias, on_delete=models.CASCADE)## Cardinalidad  M .1
-        producto_fk  = models.ForeignKey(TProductos, on_delete=models.CASCADE)## Cardinalidad  M .1
-        class Meta:
-            db_table = 't_publicaciones_productos'  # Especifica el nombre exacto de la tabla
-            verbose_name = 'PublicacionesProductos'
-            verbose_name_plural = 'PublicacionesProductos'
+class TPublicacionesProductos(models.Model):
+    id          = models.BigAutoField(primary_key=True)
+    codigo_mlm  = models.CharField(max_length=255)
+    descripcion = models.TextField(null=True, blank=True)
+    activo      = models.BooleanField(default=True)
+    marca_fk    = models.ForeignKey(TMarcas, on_delete=models.CASCADE)## Cardinalidad  M .1
+    categoria_fk = models.ForeignKey(TCategorias, on_delete=models.CASCADE)## Cardinalidad  M .1
+    producto_fk  = models.ForeignKey(TProductos, on_delete=models.CASCADE)## Cardinalidad  M .1
+    class Meta:
+        db_table = 't_publicaciones_productos'  # Especifica el nombre exacto de la tabla
+        verbose_name = 'PublicacionesProductos'
+        verbose_name_plural = 'PublicacionesProductos'
 
-        def __str__(self):
-            return f"{self.codigo_mlm} - {self.descripcion}"
+    def __str__(self):
+        return f"{self.codigo_mlm} - {self.descripcion}"
     
     
     
