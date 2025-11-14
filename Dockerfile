@@ -1,4 +1,5 @@
-FROM python:3.13
+# Usamos la imagen oficial de Python basada en Alpine Linux
+FROM python:3.11-alpine
 
 # Variables de entorno
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -7,21 +8,26 @@ ENV PYTHONUNBUFFERED 1
 # Directorio de trabajo
 WORKDIR /app
 
-# Instalar dependencias del sistema para PostgreSQL
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        postgresql-client \
-        gcc \
-        python3-dev \
-        libpq-dev \
-        build-essential \
-    && rm -rf /var/lib/apt/lists/*
+# ---- PASO 1: INSTALAR DEPENDENCIAS DE CONSTRUCCIÓN ----
+# Se necesitan para compilar numpy, pandas y otras librerías científicas.
+RUN apk add --no-cache \
+    build-base \
+    python3-dev \
+    gfortran
 
-# Instalar dependencias Python
+# ---- PASO 2: INSTALAR DEPENDENCIAS DE SELENIUM ----
+# Se necesitan para que el navegador Chrome pueda ejecutarse.
+RUN apk add --no-cache \
+    chromium \
+    chromium-chromedriver \
+    udev \
+    nss
+
+# ---- PASO 3: INSTALAR DEPENDENCIAS DE PYTHON ----
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar código
+# Copiar el código de la aplicación
 COPY . .
 
 # Puerto de exposición
