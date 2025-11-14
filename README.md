@@ -367,20 +367,20 @@ operacion/
 - Desarrollo de UploadCsv  
 
 
-# Comandos MAC  
-docker compose down -v
-docker compose up --build -d
+## Comandos MAC  
+- docker compose down -v
+- docker compose up --build -d
 
-# Aplicar migraciones de Django
-docker compose exec django python manage.py makemigrations
-docker compose exec django python manage.py migrate
+## Aplicar migraciones de Django
+- docker compose exec django python manage.py makemigrations
+- docker compose exec django python manage.py migrate
 
-# Verificar migraciones aplicadas
-docker compose exec django python manage.py showmigrations
+##  Verificar migraciones aplicadas
+- docker compose exec django python manage.py showmigrations
 
 # Crear Superusuario
-docker compose exec django python manage.py createsuperuser
-docker compose logs -f django
+- docker compose exec django python manage.py createsuperuser
+- docker compose logs -f django
 
 
 
